@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "environmentType": {
+        "value": "prod"
+      },
+      "postgreSQLServerName": {
+        "value": "aswin-dbsrv-uat"
+      },
+      "postgreSQLDatabaseName": {
+        "value": "aswin-db-uat"
+      },
+      "appServicePlanName": {
+        "value": "aswin-asp-uat"
+      },
+      "appServiceAPIAppName": {
+        "value": "aswin-be-uat"
+      },
+      "appServiceAppName": {
+        "value": "aswin-fe-uat"
+      },
+      "azureMonitorName": {
+        "value": "aswin-am-uat"
+      },
+      "appInsightsName": {
+        "value": "aswin-ai-uat"
+      },
+      "location": {
+        "value": "North Europe"
+      }
+    }
+}
