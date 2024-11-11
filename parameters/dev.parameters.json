@@ -5,10 +5,10 @@
         "environmentType": {
             "value": "nonprod"
         },
-        "postgreSQLServerName": {
+        "postgresSQLServerName": {
             "value": "aswin-dbsrv-dev"
         },
-        "postgreSQLDatabaseName": {
+        "postgresSQLDatabaseName": {
             "value": "aswin-db-dev"
         },
         "appServicePlanName": {
