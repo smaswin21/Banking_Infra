@@ -42,47 +42,42 @@ param appServiceAPIDBHostFLASK_APP string
 @sys.description('The value for the environment variable FLASK_DEBUG')
 param appServiceAPIDBHostFLASK_DEBUG string
 
-resource postgresSQLServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
-  name: postgreSQLServerName
-  location: location
-  sku: {
-    name: 'Standard_B1ms'
-    tier: 'Burstable'
-  }
-  properties: {
-    administratorLogin: 'iebankdbadmin'
-    administratorLoginPassword: 'IE.Bank.DB.Admin.Pa$$'
-    createMode: 'Default'
-    highAvailability: {
-      mode: 'Disabled'
-      standbyAvailabilityZone: ''
-    }
-    storage: {
-      storageSizeGB: 32
-    }
-    backup: {
-      backupRetentionDays: 7
-      geoRedundantBackup: 'Disabled'
-    }
-    version: '15'
-  }
 
-  resource postgresSQLServerFirewallRules 'firewallRules@2022-12-01' = {
-    name: 'AllowAllAzureServicesAndResourcesWithinAzureIps'
-    properties: {
-      endIpAddress: '0.0.0.0'
-      startIpAddress: '0.0.0.0'
-    }
+module postgresSQLServer 'modules/postgres-sql-server.bicep' = {
+  name: 'postgresSQLServer'
+  params: {
+    location: location
+    environmentType: environmentType
+    postgreSQLServerName: postgreSQLServerName
   }
 }
 
-resource postgresSQLDatabase 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2022-12-01' = {
-  name: postgreSQLDatabaseName
-  parent: postgresSQLServer
-  properties: {
-    charset: 'UTF8'
-    collation: 'en_US.UTF8'
+
+module postgresSQLServerFirewall 'modules/postgreSQLFirewall.bicep' = {
+  name: 'postgresSQLFirewallModule'
+  params: {
+    ruleName: 'AllowAllAzureServicesAndResourcesWithinAzureIps'
+    startIpAddress: '0.0.0.0'
+    endIpAddress: '0.0.0.0'
+    parentResourceId: postgreSQLServer.outputs.serverResourceId
+  },
+  dependsOn: [
+    postgresSQLServer
+  ]
+}
+
+
+module postgresSQLDatabase 'modules/postgres-sql-database.bicep' = {
+  name: 'postgresSQLDatabase'
+  params: {
+    location: location
+    environmentType: environmentType
+    postgreSQLServerName: postgreSQLServerName
+    postgreSQLDatabaseName: postgreSQLDatabaseName
   }
+  dependsOn: [
+    postgresSQLServer
+  ]
 }
 
 module appService 'modules/app-service.bicep' = {
