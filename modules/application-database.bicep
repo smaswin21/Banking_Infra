@@ -3,6 +3,10 @@ param environmentType string = 'nonprod'
 param postgresSQLServerName string
 param postgresSQLDatabaseName string
 
+if (location == null) {
+  throw new Error('location is required')
+}
+
 module postgresSQLServer 'postgres-sql-server.bicep' = {
   name: 'postgresSQLServer'
   params: {
