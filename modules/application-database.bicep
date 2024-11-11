@@ -1,11 +1,9 @@
+@description('Deployment location')
 param location string = resourceGroup().location
+@description('Environment type for deployment')
 param environmentType string = 'nonprod'
 param postgresSQLServerName string
 param postgresSQLDatabaseName string
-
-if (location == null) {
-  throw new Error('location is required')
-}
 
 module postgresSQLServer 'postgres-sql-server.bicep' = {
   name: 'postgresSQLServer'
@@ -20,8 +18,6 @@ module postgresSQLServer 'postgres-sql-server.bicep' = {
 module postgresSQLDatabase 'postgres-sql-database.bicep' = {
   name: 'postgresSQLDatabase'
   params: {
-    location: location
-    environmentType: environmentType
     postgresSQLServerName: postgresSQLServer.outputs.postgresSQLServerName
     postgresSQLDatabaseName: postgresSQLDatabaseName
   }

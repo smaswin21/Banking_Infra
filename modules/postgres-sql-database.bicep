@@ -1,5 +1,3 @@
-param location string = resourceGroup().location
-param environmentType string = 'nonprod'
 param postgresSQLDatabaseName string = 'ie-bank-db'
 param postgresSQLServerName string
 
