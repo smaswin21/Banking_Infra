@@ -2,12 +2,14 @@ param location string = resourceGroup().location
 param environmentType string = 'nonprod'
 param postgresSQLServerName string = 'ie-bank-db-server-dev'
 
+// based on prod non prod change the sku
+var skuName = environmentType == 'prod' ? 'Standard_B1ms' : 'Standard_B1ms'
 
 resource postgresSQLServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
   name: postgresSQLServerName
   location: location
   sku: {
-    name: 'Standard_B1ms'
+    name: skuName
     tier: 'Burstable'
   }
   properties: {
