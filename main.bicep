@@ -7,11 +7,11 @@ param environmentType string = 'nonprod'
 @sys.description('The PostgreSQL Server name')
 @minLength(3)
 @maxLength(24)
-param postgreSQLServerName string = 'ie-bank-db-server-dev'
+param postgresSQLServerName string = 'ie-bank-db-server-dev'
 @sys.description('The PostgreSQL Database name')
 @minLength(3)
 @maxLength(24)
-param postgreSQLDatabaseName string = 'ie-bank-db'
+param postgresSQLDatabaseName string = 'ie-bank-db'
 @sys.description('The App Service Plan name')
 @minLength(3)
 @maxLength(24)
@@ -43,42 +43,17 @@ param appServiceAPIDBHostFLASK_APP string
 param appServiceAPIDBHostFLASK_DEBUG string
 
 
-module postgresSQLServer 'modules/postgres-sql-server.bicep' = {
-  name: 'postgresSQLServer'
+module applicationDatabase 'modules/application-database.bicep' = {
+  name: 'applicationDatabase'
   params: {
     location: location
     environmentType: environmentType
-    postgreSQLServerName: postgreSQLServerName
+    postgresSQLServerName: postgresSQLServerName
+    postgresSQLDatabaseName: postgresSQLDatabaseName
   }
+
 }
 
-
-module postgresSQLServerFirewall 'modules/postgreSQLFirewall.bicep' = {
-  name: 'postgresSQLFirewallModule'
-  params: {
-    ruleName: 'AllowAllAzureServicesAndResourcesWithinAzureIps'
-    startIpAddress: '0.0.0.0'
-    endIpAddress: '0.0.0.0'
-    parentResourceId: postgreSQLServer.outputs.serverResourceId
-  },
-  dependsOn: [
-    postgresSQLServer
-  ]
-}
-
-
-module postgresSQLDatabase 'modules/postgres-sql-database.bicep' = {
-  name: 'postgresSQLDatabase'
-  params: {
-    location: location
-    environmentType: environmentType
-    postgreSQLServerName: postgreSQLServerName
-    postgreSQLDatabaseName: postgreSQLDatabaseName
-  }
-  dependsOn: [
-    postgresSQLServer
-  ]
-}
 
 module appService 'modules/app-service.bicep' = {
   name: 'appService'
@@ -97,7 +72,7 @@ module appService 'modules/app-service.bicep' = {
     appServiceAPIEnvVarENV: appServiceAPIEnvVarENV
   }
   dependsOn: [
-    postgresSQLDatabase
+    applicationDatabase
   ]
 }
 

@@ -3,8 +3,8 @@ param environmentType string = 'nonprod'
 param postgresSQLServerName string = 'ie-bank-db-server-dev'
 
 
-resource postgreSQLServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
-  name: postgreSQLServerName
+resource postgresSQLServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
+  name: postgresSQLServerName
   location: location
   sku: {
     name: 'Standard_B1ms'
@@ -28,9 +28,18 @@ resource postgreSQLServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01'
     version: '15'
   }
 
+  resource postgresSQLServerFirewallRules 'firewallRules@2022-12-01' = {
+    name: 'AllowAllAzureServicesAndResourcesWithinAzureIps'
+    properties: {
+      endIpAddress: '0.0.0.0'
+      startIpAddress: '0.0.0.0'
+    }
+  }
+
 }
 
 
 
 
-output postgreSQLServerName string = postgreSQLServer.name
+output postgresSQLServerName string = postgresSQLServer.name
+output resourceOutput object = postgresSQLServer
