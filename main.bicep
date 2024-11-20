@@ -47,6 +47,8 @@ param containerRegistryName string
 param dockerRegistryImageName string
 @sys.description('The tag of the Docker image')
 param dockerRegistryImageTag string = 'latest'
+@sys.description('The name of the Log Analytics Workspace')
+param logAnalyticsWorkspaceName string
 
 
 module applicationDatabase 'modules/application-database.bicep' = {
@@ -58,6 +60,15 @@ module applicationDatabase 'modules/application-database.bicep' = {
     postgresSQLDatabaseName: postgresSQLDatabaseName
   }
 
+}
+
+// Deploy Log Analytics Workspace
+module logAnalytics 'modules/log-analytics.bicep' = {
+  name: 'logAnalytics'
+  params: {
+    location: location
+    name: logAnalyticsWorkspaceName
+  }
 }
 
 
@@ -86,3 +97,5 @@ module appService 'modules/app-service.bicep' = {
 }
 
 output appServiceAppHostName string = appService.outputs.appServiceAppHostName
+output logAnalyticsWorkspaceId string = logAnalytics.outputs.logAnalyticsWorkspaceId
+output logAnalyticsWorkspaceName string = logAnalytics.outputs.logAnalyticsWorkspaceName

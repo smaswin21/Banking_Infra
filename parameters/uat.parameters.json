@@ -31,6 +31,9 @@
       },
       "dockerRegistryImageTag": {
         "value": "latest"
+      },
+      "logAnalyticsWorkspaceName": {
+        "value": "diana-logAnalyticsWorkspace-uat" 
       }
   }
 }
