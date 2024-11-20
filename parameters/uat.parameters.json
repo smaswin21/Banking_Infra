@@ -22,6 +22,15 @@
       },
       "location": {
           "value": "North Europe"
+      },
+      "containerRegistryName": {
+        "value": "aswinacruat"
+      },
+      "dockerRegistryImageName": {
+        "value": "aswin-be-uat"
+      },
+      "dockerRegistryImageTag": {
+        "value": "latest"
       }
   }
 }
