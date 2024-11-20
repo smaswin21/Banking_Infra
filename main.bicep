@@ -41,6 +41,12 @@ param appServiceAPIDBHostDBUSER string
 param appServiceAPIDBHostFLASK_APP string
 @sys.description('The value for the environment variable FLASK_DEBUG')
 param appServiceAPIDBHostFLASK_DEBUG string
+@sys.description('The name of the Azure Container Registry')
+param containerRegistryName string
+@sys.description('The name of the Docker image')
+param dockerRegistryImageName string
+@sys.description('The tag of the Docker image')
+param dockerRegistryImageTag string = 'latest'
 
 
 module applicationDatabase 'modules/application-database.bicep' = {
@@ -70,6 +76,9 @@ module appService 'modules/app-service.bicep' = {
     appServiceAPIEnvVarDBNAME: appServiceAPIEnvVarDBNAME
     appServiceAPIEnvVarDBPASS: appServiceAPIEnvVarDBPASS
     appServiceAPIEnvVarENV: appServiceAPIEnvVarENV
+    dockerRegistryImageName: dockerRegistryImageName
+    dockerRegistryImageTag: dockerRegistryImageTag
+    containerRegistryName: containerRegistryName
   }
   dependsOn: [
     applicationDatabase

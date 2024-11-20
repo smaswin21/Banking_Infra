@@ -1,7 +1,7 @@
 name: ie-bank-infra
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   pull_request:
       branches:
         - main
@@ -24,9 +24,13 @@ jobs:
       # Checkout code
     - uses: actions/checkout@v3
 
-      # Lint Bicep code 
+      # Lint Bicep code
     - name: Run Bicep linter
-      run: az bicep build --file ./main.bicep
+      run: az bicep build --file ./main.bicep --only-show-errors --output json
+
+    # checkov
+    - name: Run checkov
+      run: checkov -f ./main.bicep --quiet
 
       # Upload Bicep build artifact
     - name: Upload Bicep build artifact
@@ -46,7 +50,7 @@ jobs:
 
       # Checkout code
     - uses: actions/checkout@v3
-    
+
       # Log into Azure
     - uses: azure/login@v2
       with:
@@ -61,7 +65,7 @@ jobs:
         template: ./main.bicep
         parameters: ./parameters/dev.parameters.json appServiceAPIEnvVarENV=${{ vars.ENV }} appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }} appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }} appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }} appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }} appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }} appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
         deploymentName: ${{ env.USER_ALIAS }}
-  
+
   deploy-uat:
     if: github.event.pull_request.base.ref == 'main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
