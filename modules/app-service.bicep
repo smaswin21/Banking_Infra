@@ -89,7 +89,7 @@ module appServiceBE './backend-app-service.bicep' = {
     ]
   }
   dependsOn: [
-    containerRegistry,
+    containerRegistry
     appServicePlan
   ]
 }
