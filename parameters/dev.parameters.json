@@ -24,7 +24,7 @@
             "value": "North Europe"
         },
         "containerRegistryName": {
-            "value": "aswindockerregistry"
+            "value": "aswin-acr-dev"
         },
         "dockerRegistryImageName": {
             "value": "aswin-be-dev"
