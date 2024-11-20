@@ -51,6 +51,7 @@ param dockerRegistryImageTag string = 'latest'
 param logAnalyticsWorkspaceName string
 @description('The name of the Application Insights resource')
 param appInsightsName string 
+var logAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', logAnalyticsWorkspaceName)
 
 
 
@@ -79,7 +80,7 @@ module appInsights 'modules/app-insights.bicep' = {
   params: {
     location: location
     appInsightsName: appInsightsName
-    logAnalyticsWorkspaceId: logAnalytics.outputs.logAnalyticsWorkspaceId
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
   }
   dependsOn: [
     logAnalytics

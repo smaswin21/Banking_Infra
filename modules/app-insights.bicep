@@ -13,7 +13,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   kind: 'web'
   properties: {
     Application_Type: 'web'
-    WorkspaceResourceId: logAnalyticsWorkspaceId // i am not sure what to put here 
+    WorkspaceResourceId: logAnalyticsWorkspaceId // i am not sure what to put
   }
 }
 
