@@ -43,6 +43,7 @@ module appServicePlan './app-service-plan.bicep' = {
 module appServiceBE './backend-app-service.bicep' = {
   name: 'backend'
   params: {
+    location: location
     appServiceAPIAppName: appServiceAPIAppName
     appServicePlanId: appServicePlan.outputs.id
 
@@ -110,6 +111,9 @@ resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
       appSettings: []
     }
   }
+  dependsOn: [
+    appServicePlan
+  ]
 }
 
 output appServiceAppHostName string = appServiceApp.properties.defaultHostName
