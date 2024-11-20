@@ -105,9 +105,15 @@ module appService 'modules/app-service.bicep' = {
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
     containerRegistryName: containerRegistryName
+    // Pass Application Insights settings
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey
+    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
+
   }
   dependsOn: [
     applicationDatabase
+    // i think the registry should be here aswell
+    appInsights
   ]
 }
 

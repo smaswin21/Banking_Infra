@@ -21,6 +21,10 @@ param dockerRegistryImageTag string
 
 var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
 
+param appInsightsInstrumentationKey string
+param appInsightsConnectionString string
+
+
 
 // BACKEND
 module containerRegistry './container-registry.bicep' = {
@@ -86,15 +90,22 @@ module appServiceBE './backend-app-service.bicep' = {
         name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
         value: 'true'
       }
+      {
+        name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+        value: appInsightsInstrumentationKey
+      }
+      {
+        name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+        value: appInsightsConnectionString
+      }
     ]
   }
   dependsOn: [
     containerRegistry
     appServicePlan
+    appInsights
   ]
 }
-
-
 
 // FRONTEND
 resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
@@ -108,11 +119,22 @@ resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
       alwaysOn: false
       ftpsState: 'FtpsOnly'
       appCommandLine: 'pm2 serve /home/site/wwwroot --spa --no-daemon'
-      appSettings: []
+      appSettings: [
+          // Add Application Insights settings
+          {
+            name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+            value: appInsightsInstrumentationKey
+          }
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: appInsightsConnectionString
+          }
+      ]
     }
   }
   dependsOn: [
     appServicePlan
+    appInsights 
   ]
 }
 
