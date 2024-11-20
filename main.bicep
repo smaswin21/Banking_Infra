@@ -49,6 +49,9 @@ param dockerRegistryImageName string
 param dockerRegistryImageTag string = 'latest'
 @sys.description('The name of the Log Analytics Workspace')
 param logAnalyticsWorkspaceName string
+@description('The name of the Application Insights resource')
+param appInsightsName string
+
 
 
 module applicationDatabase 'modules/application-database.bicep' = {
@@ -71,6 +74,17 @@ module logAnalytics 'modules/log-analytics.bicep' = {
   }
 }
 
+module appInsights 'modules/app-insights.bicep' = {
+  name: 'appInsights'
+  params: {
+    location: location
+    appInsightsName: appInsightsName
+    logAnalyticsWorkspaceId: logAnalytics.outputs.logAnalyticsWorkspaceId
+  }
+  dependsOn: [
+    logAnalytics
+  ]
+}
 
 module appService 'modules/app-service.bicep' = {
   name: 'appService'
@@ -99,3 +113,7 @@ module appService 'modules/app-service.bicep' = {
 output appServiceAppHostName string = appService.outputs.appServiceAppHostName
 output logAnalyticsWorkspaceId string = logAnalytics.outputs.logAnalyticsWorkspaceId
 output logAnalyticsWorkspaceName string = logAnalytics.outputs.logAnalyticsWorkspaceName
+output appInsightsInstrumentationKey string = appInsights.outputs.appInsightsInstrumentationKey
+output appInsightsConnectionString string = appInsights.outputs.appInsightsConnectionString 
+
+
