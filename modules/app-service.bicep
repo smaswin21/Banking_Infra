@@ -103,7 +103,6 @@ module appServiceBE './backend-app-service.bicep' = {
   dependsOn: [
     containerRegistry
     appServicePlan
-    appInsights
   ]
 }
 
@@ -134,7 +133,6 @@ resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
   }
   dependsOn: [
     appServicePlan
-    appInsights 
   ]
 }
 
