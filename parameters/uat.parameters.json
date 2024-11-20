@@ -34,6 +34,9 @@
       },
       "logAnalyticsWorkspaceName": {
         "value": "diana-logAnalyticsWorkspace-uat" 
-      }
+      },
+      "appInsightsName": {
+        "value": "diana-appInsights-uat"
+    }
   }
 }

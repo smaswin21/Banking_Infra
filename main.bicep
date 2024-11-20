@@ -50,7 +50,7 @@ param dockerRegistryImageTag string = 'latest'
 @sys.description('The name of the Log Analytics Workspace')
 param logAnalyticsWorkspaceName string
 @description('The name of the Application Insights resource')
-param appInsightsName string
+param appInsightsName string 
 
 
 
