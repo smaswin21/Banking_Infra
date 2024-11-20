@@ -21,17 +21,6 @@ param dockerRegistryImageTag string
 
 var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
 
-resource appServicePlan 'Microsoft.Web/serverFarms@2022-03-01' = {
-  name: appServicePlanName
-  location: location
-  sku: {
-    name: appServicePlanSkuName
-  }
-  kind: 'linux'
-  properties: {
-    reserved: true
-  }
-}
 
 // BACKEND
 module containerRegistry './container-registry.bicep' = {
@@ -42,16 +31,27 @@ module containerRegistry './container-registry.bicep' = {
   }
 }
 
-module backend './backend-app-service.bicep' = {
+module appServicePlan './app-service-plan.bicep' = {
+  name: 'appServicePlan'
+  params: {
+    location: location
+    appServicePlanName: appServicePlanName
+    skuName: appServicePlanSkuName
+  }
+}
+
+module appServiceBE './backend-app-service.bicep' = {
   name: 'backend'
   params: {
     appServiceAPIAppName: appServiceAPIAppName
-    appServicePlanId: appServicePlan.id
+    appServicePlanId: appServicePlan.outputs.id
+
     containerRegistryName: containerRegistryName
     dockerRegistryUserName: containerRegistry.outputs.registryUserName
     dockerRegistryPassword: containerRegistry.outputs.registryPassword0
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
+
     appSettings: [
       {
       name: 'ENV'
@@ -88,7 +88,8 @@ module backend './backend-app-service.bicep' = {
     ]
   }
   dependsOn: [
-    containerRegistry
+    containerRegistry,
+    appServicePlan
   ]
 }
 
@@ -99,7 +100,7 @@ resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
   name: appServiceAppName
   location: location
   properties: {
-    serverFarmId: appServicePlan.id
+    serverFarmId: appServicePlan.outputs.id
     httpsOnly: true
     siteConfig: {
       linuxFxVersion: 'NODE|18-lts'
