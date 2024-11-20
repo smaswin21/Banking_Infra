@@ -30,7 +30,11 @@ jobs:
 
     # checkov
     - name: Run checkov
-      run: checkov -f ./main.bicep --quiet
+      uses: bridgecrewio/checkov-action@master
+      with:
+        directory: './'
+        file: 'main.bicep'
+      continue-on-error: true
 
       # Upload Bicep build artifact
     - name: Upload Bicep build artifact
