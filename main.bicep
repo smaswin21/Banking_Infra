@@ -47,7 +47,20 @@ param containerRegistryName string
 param dockerRegistryImageName string
 @sys.description('The tag of the Docker image')
 param dockerRegistryImageTag string = 'latest'
+@sys.description('The name of the Key Vault')
+param keyVaultName string = 'ie-bank-kv-dev'
+@sys.description('The arrasy of role assignments for the Key Vault')
+param keyVaultRoleAssignments array = []
 
+
+module keyVault 'modules/keyvault.bicep' = {
+  name: 'keyVault'
+  params: {
+    keyVaultName: keyVaultName
+    location: location
+    roleAssignments: keyVaultRoleAssignments
+  }
+}
 
 module applicationDatabase 'modules/application-database.bicep' = {
   name: 'applicationDatabase'
