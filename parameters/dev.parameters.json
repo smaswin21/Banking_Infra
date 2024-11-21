@@ -32,6 +32,12 @@
         "dockerRegistryImageTag": {
             "value": "latest"
         },
+        "logAnalyticsWorkspaceName": {
+            "value": "diana-logAnalyticsWorkspace-dev" 
+        },
+        "appInsightsName": {
+            "value": "diana-appInsights-dev"
+        }, 
         "keyVaultName": {
             "value": "aswin-kv-dev"
         },
@@ -44,5 +50,6 @@
                 }
             ]
         }
+
     }
 }

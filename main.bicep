@@ -47,6 +47,11 @@ param containerRegistryName string
 param dockerRegistryImageName string
 @sys.description('The tag of the Docker image')
 param dockerRegistryImageTag string = 'latest'
+@sys.description('The name of the Log Analytics Workspace')
+param logAnalyticsWorkspaceName string
+@description('The name of the Application Insights resource')
+param appInsightsName string 
+var logAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspaces', logAnalyticsWorkspaceName)
 @sys.description('The name of the Key Vault')
 param keyVaultName string = 'ie-bank-kv-dev'
 @sys.description('The arrasy of role assignments for the Key Vault')
@@ -73,6 +78,26 @@ module applicationDatabase 'modules/application-database.bicep' = {
 
 }
 
+// Deploy Log Analytics Workspace
+module logAnalytics 'modules/log-analytics.bicep' = {
+  name: 'logAnalytics'
+  params: {
+    location: location
+    name: logAnalyticsWorkspaceName
+  }
+}
+
+module appInsights 'modules/app-insights.bicep' = {
+  name: 'appInsights'
+  params: {
+    location: location
+    appInsightsName: appInsightsName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
+  }
+  dependsOn: [
+    logAnalytics
+  ]
+}
 
 module appService 'modules/app-service.bicep' = {
   name: 'appService'
@@ -92,10 +117,22 @@ module appService 'modules/app-service.bicep' = {
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
     containerRegistryName: containerRegistryName
+    // Pass Application Insights settings
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey
+    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
+
   }
   dependsOn: [
     applicationDatabase
+    // i think the registry should be here aswell
+    appInsights
   ]
 }
 
 output appServiceAppHostName string = appService.outputs.appServiceAppHostName
+output logAnalyticsWorkspaceId string = logAnalytics.outputs.logAnalyticsWorkspaceId
+output logAnalyticsWorkspaceName string = logAnalytics.outputs.logAnalyticsWorkspaceName
+output appInsightsInstrumentationKey string = appInsights.outputs.appInsightsInstrumentationKey
+output appInsightsConnectionString string = appInsights.outputs.appInsightsConnectionString 
+
+
