@@ -33,7 +33,7 @@
             "value": "latest"
         },
         "keyVaultName": {
-            "value": "aswin-kv-dev"
+            "value": "aswin-kv-uat"
         },
         "keyVaultRoleAssignments": {
             "value": [
