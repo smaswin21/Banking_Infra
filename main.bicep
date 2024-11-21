@@ -58,8 +58,7 @@ module keyVault 'modules/keyvault.bicep' = {
   params: {
     keyVaultName: keyVaultName
     location: location
-    environmentType: environmentType
-    keyVaultRoleAssignments: keyVaultRoleAssignments
+    roleAssignments: keyVaultRoleAssignments
   }
 }
 
