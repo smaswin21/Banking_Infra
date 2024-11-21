@@ -38,5 +38,18 @@
         "appInsightsName": {
             "value": "diana-appInsights-dev"
         } 
+        "keyVaultName": {
+            "value": "aswin-kv-dev"
+        },
+        "keyVaultRoleAssignments": {
+            "value": [
+                {
+                    "principalId": "daa3436a-d1fb-44fe-b34b-053db433cdb7",
+                    "roleDefinitionIdOrName": "Key Vault Administrator",
+                    "principalType": "Group"
+                }
+            ]
+        }
+
     }
 }
