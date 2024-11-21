@@ -38,8 +38,9 @@
         "keyVaultRoleAssignments": {
             "value": [
                 {
-                    "principalId": "00000000-0000-0000-0000-000000000000",
-                    "roleDefinitionId": "00000000-0000-0000-0000-000000000000"
+                    "principalId": "daa3436a-d1fb-44fe-b34b-053db433cdb7",
+                    "roleDefinitionIdOrName": "Key Vault Administrator",
+                    "principalType": "Group"
                 }
             ]
         }
