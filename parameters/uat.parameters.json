@@ -1,36 +1,47 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {
-      "environmentType": {
-          "value": "nonprod"
-      },
-      "postgresSQLServerName": {
-          "value": "aswin-dbsrv-uat"
-      },
-      "postgresSQLDatabaseName": {
-          "value": "aswin-db-uat"
-      },
-      "appServicePlanName": {
-          "value": "aswin-asp-uat"
-      },
-      "appServiceAPIAppName": {
-          "value": "aswin-be-uat"
-      },
-      "appServiceAppName": {
-          "value": "aswin-fe-uat"
-      },
-      "location": {
-          "value": "North Europe"
-      },
-      "containerRegistryName": {
-        "value": "aswinacruat"
-      },
-      "dockerRegistryImageName": {
-        "value": "aswin-be-uat"
-      },
-      "dockerRegistryImageTag": {
-        "value": "latest"
-      }
+    "parameters": {
+        "environmentType": {
+            "value": "nonprod"
+        },
+        "postgresSQLServerName": {
+            "value": "aswin-dbsrv-uat"
+        },
+        "postgresSQLDatabaseName": {
+            "value": "aswin-db-uat"
+        },
+        "appServicePlanName": {
+            "value": "aswin-asp-uat"
+        },
+        "appServiceAPIAppName": {
+            "value": "aswin-be-uat"
+        },
+        "appServiceAppName": {
+            "value": "aswin-fe-uat"
+        },
+        "location": {
+            "value": "North Europe"
+        },
+        "containerRegistryName": {
+            "value": "aswinacruat"
+        },
+        "dockerRegistryImageName": {
+            "value": "aswin-be-uat"
+        },
+        "dockerRegistryImageTag": {
+            "value": "latest"
+        },
+        "keyVaultName": {
+            "value": "aswin-kv-dev"
+        },
+        "keyVaultRoleAssignments": {
+            "value": [
+                {
+                    "principalId": "00000000-0000-0000-0000-000000000000",
+                    "roleDefinitionId": "00000000-0000-0000-0000-000000000000"
+                }
+            ]
+        }
   }
 }
