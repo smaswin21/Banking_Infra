@@ -6,40 +6,40 @@
           "value": "nonprod"
       },
       "postgresSQLServerName": {
-          "value": "aswin-dbsrv-uat"
+          "value": "404moneynotfound-dbsrv-uat"
       },
       "postgresSQLDatabaseName": {
-          "value": "aswin-db-uat"
+          "value": "404moneynotfound-db-uat"
       },
       "appServicePlanName": {
-          "value": "aswin-asp-uat"
+          "value": "404moneynotfound-asp-uat"
       },
       "appServiceAPIAppName": {
-          "value": "aswin-be-uat"
+          "value": "404moneynotfound-be-uat"
       },
       "appServiceAppName": {
-          "value": "aswin-fe-uat"
+          "value": "404moneynotfound-fe-uat"
       },
       "location": {
           "value": "North Europe"
       },
       "containerRegistryName": {
-        "value": "aswinacruat"
+        "value": "404moneynotfoundacruat"
       },
       "dockerRegistryImageName": {
-        "value": "aswin-be-uat"
+        "value": "404moneynotfound-be-uat"
       },
       "dockerRegistryImageTag": {
         "value": "latest"
       },
       "logAnalyticsWorkspaceName": {
-        "value": "diana-logAnalyticsWorkspace-uat" 
+        "value": "404moneynotfound-logAnalyticsWorkspace-uat"
       },
       "appInsightsName": {
-        "value": "diana-appInsights-uat"
+        "value": "404moneynotfound-appInsights-uat"
       },
         "keyVaultName": {
-            "value": "aswin-kv-uat"
+            "value": "404moneynotfound-kv-uat"
       },
         "keyVaultRoleAssignments": {
             "value": [
