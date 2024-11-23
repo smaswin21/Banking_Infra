@@ -125,7 +125,6 @@ module appService 'modules/app-service.bicep' = {
     appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
   
-
   }
   dependsOn: [
     applicationDatabase
