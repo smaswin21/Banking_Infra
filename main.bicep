@@ -75,7 +75,8 @@ module applicationDatabase 'modules/application-database.bicep' = {
     environmentType: environmentType
     postgresSQLServerName: postgresSQLServerName
     postgresSQLDatabaseName: postgresSQLDatabaseName
-    
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
+
   }
 
 }
