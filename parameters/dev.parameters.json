@@ -6,40 +6,40 @@
             "value": "nonprod"
         },
         "postgresSQLServerName": {
-            "value": "aswin-dbsrv-dev"
+            "value": "money404-dbsrv-dev"
         },
         "postgresSQLDatabaseName": {
-            "value": "aswin-db-dev"
+            "value": "money404-db-dev"
         },
         "appServicePlanName": {
-            "value": "aswin-asp-dev"
+            "value": "money404-asp-dev"
         },
         "appServiceAPIAppName": {
-            "value": "aswin-be-dev"
+            "value": "money404-be-dev"
         },
         "appServiceAppName": {
-            "value": "aswin-fe-dev"
+            "value": "money404-fe-dev"
         },
         "location": {
             "value": "North Europe"
         },
         "containerRegistryName": {
-            "value": "aswinacrdev"
+            "value": "money404acrdev"
         },
         "dockerRegistryImageName": {
-            "value": "aswin-be-dev"
+            "value": "money404-be-dev"
         },
         "dockerRegistryImageTag": {
             "value": "latest"
         },
         "logAnalyticsWorkspaceName": {
-            "value": "diana-logAnalyticsWorkspace-dev" 
+            "value": "money404-law-dev"
         },
         "appInsightsName": {
-            "value": "diana-appInsights-dev"
-        }, 
+            "value": "money404-appInsights-dev"
+        },
         "keyVaultName": {
-            "value": "aswin-kv-dev"
+            "value": "money404-kv-dev"
         },
         "keyVaultRoleAssignments": {
             "value": [
