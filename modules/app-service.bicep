@@ -23,7 +23,7 @@ var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify a
 // added these 
 param appInsightsInstrumentationKey string
 param appInsightsConnectionString string
-
+param logAnalyticsWorkspaceId string
 
 
 // BACKEND
@@ -32,6 +32,7 @@ module containerRegistry './container-registry.bicep' = {
   params: {
     location: location
     registryName: containerRegistryName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
   }
 }
 

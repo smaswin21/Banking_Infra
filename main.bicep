@@ -119,9 +119,11 @@ module appService 'modules/app-service.bicep' = {
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
     containerRegistryName: containerRegistryName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
     // Pass Application Insights settings
     appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
+  
 
   }
   dependsOn: [
