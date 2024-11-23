@@ -74,7 +74,6 @@ module keyVault 'modules/infrastructure/keyvault.bicep' = {
   }
 }
 
-
 // Deploy Log Analytics Workspace
 module logAnalytics 'modules/infrastructure/log-analytics.bicep' = {
   name: 'logAnalytics'

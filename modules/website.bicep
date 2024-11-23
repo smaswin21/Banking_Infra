@@ -41,8 +41,8 @@ param postgresSQLDatabaseName string
 
 // BACKEND
 module containerRegistry './infrastructure/container-registry.bicep' = {
-name: 'containerRegistry'
-params: {
+  name: 'containerRegistry'
+  params: {
     location: location
     registryName: containerRegistryName
     keyVaultResourceId: keyVaultResourceId
@@ -137,7 +137,6 @@ module applicationDatabase './database.bicep' = {
     postgreSQLAdminServicePrincipalObjectId: appServiceBE.outputs.systemAssignedIdentityPrincipalId
     postgreSQLAdminServicePrincipalName: appServiceAPIAppName
   }
-
 }
 
 // FRONTEND
