@@ -185,6 +185,3 @@ resource appServiceDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
     ]
   }
 }
-
-// Outputs
-output systemAssignedIdentityPrincipalId string = appServiceApp.identity.principalId
