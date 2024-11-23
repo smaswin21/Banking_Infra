@@ -64,6 +64,7 @@ module keyVault 'modules/keyvault.bicep' = {
     keyVaultName: keyVaultName
     location: location
     roleAssignments: keyVaultRoleAssignments
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
   }
 }
 
@@ -74,6 +75,7 @@ module applicationDatabase 'modules/application-database.bicep' = {
     environmentType: environmentType
     postgresSQLServerName: postgresSQLServerName
     postgresSQLDatabaseName: postgresSQLDatabaseName
+    
   }
 
 }
