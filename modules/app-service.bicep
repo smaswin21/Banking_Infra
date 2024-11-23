@@ -20,7 +20,7 @@ param dockerRegistryImageName string
 param dockerRegistryImageTag string
 
 var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
-
+// added these 
 param appInsightsInstrumentationKey string
 param appInsightsConnectionString string
 
