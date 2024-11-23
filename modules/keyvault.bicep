@@ -61,7 +61,7 @@ resource keyVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
 output keyVaultName string = keyVault.name
 
 param diagnosticSettingName string ='myDiagnosticSetting'
-param WorkspaceResourceId string
+param logAnalyticsWorkspaceId string
 
 @description('The resource ID of the key vault.')
 output resourceId string = keyVault.id
@@ -73,7 +73,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   name: diagnosticSettingName
   scope: keyVault //  Key Vault resource
   properties: {
-    workspaceId: WorkspaceResourceId // Log Analytics Workspace ID - sends logs and metrics to the Log Analytics Workspace using the ID
+    workspaceId: logAnalyticsWorkspaceId // Log Analytics Workspace ID - sends logs and metrics to the Log Analytics Workspace using the ID
     metrics: [
       {
         category: 'AllMetrics' 
