@@ -6,40 +6,40 @@
           "value": "nonprod"
       },
       "postgresSQLServerName": {
-          "value": "404money-dbsrv-uat"
+          "value": "money404-dbsrv-uat"
       },
       "postgresSQLDatabaseName": {
-          "value": "404money-db-uat"
+          "value": "money404-db-uat"
       },
       "appServicePlanName": {
-          "value": "404money-asp-uat"
+          "value": "money404-asp-uat"
       },
       "appServiceAPIAppName": {
-          "value": "404money-be-uat"
+          "value": "money404-be-uat"
       },
       "appServiceAppName": {
-          "value": "404money-fe-uat"
+          "value": "money404-fe-uat"
       },
       "location": {
           "value": "North Europe"
       },
       "containerRegistryName": {
-        "value": "404moneyacruat"
+        "value": "money404acruat"
       },
       "dockerRegistryImageName": {
-        "value": "404money-be-uat"
+        "value": "money404-be-uat"
       },
       "dockerRegistryImageTag": {
         "value": "latest"
       },
       "logAnalyticsWorkspaceName": {
-        "value": "404money-law-uat"
+        "value": "money404-law-uat"
       },
       "appInsightsName": {
-        "value": "404money-appInsights-uat"
+        "value": "money404-appInsights-uat"
       },
         "keyVaultName": {
-            "value": "404money-kv-uat"
+            "value": "money404-kv-uat"
       },
         "keyVaultRoleAssignments": {
             "value": [
