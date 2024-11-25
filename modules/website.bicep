@@ -129,6 +129,11 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     ]
   }
   // dependencies are implicit
+  dependsOn: [
+    containerRegistry
+    appServicePlan
+    keyVaultReference
+  ]
 }
 
 
