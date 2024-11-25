@@ -35,6 +35,8 @@ param keyVaultSecretNameAdminPassword0 string
 @description('Name of the secret to store the admin password 1')
 param keyVaultSecretNameAdminPassword1 string
 
+param postgresSQLServerName string
+param postgresSQLDatabaseName string
 
 
 // BACKEND
@@ -122,6 +124,20 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     ]
   }
   // dependencies are implicit
+}
+
+
+module applicationDatabase './database.bicep' = {
+  name: 'applicationDatabase'
+  params: {
+    location: location
+    environmentType: environmentType
+    postgresSQLServerName: postgresSQLServerName
+    postgresSQLDatabaseName: postgresSQLDatabaseName
+    postgreSQLAdminServicePrincipalObjectId: appServiceBE.outputs.systemAssignedIdentityPrincipalId
+    postgreSQLAdminServicePrincipalName: appServiceAPIAppName
+  }
+
 }
 
 // FRONTEND

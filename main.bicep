@@ -74,16 +74,6 @@ module keyVault 'modules/infrastructure/keyvault.bicep' = {
   }
 }
 
-module applicationDatabase 'modules/database.bicep' = {
-  name: 'applicationDatabase'
-  params: {
-    location: location
-    environmentType: environmentType
-    postgresSQLServerName: postgresSQLServerName
-    postgresSQLDatabaseName: postgresSQLDatabaseName
-  }
-
-}
 
 // Deploy Log Analytics Workspace
 module logAnalytics 'modules/infrastructure/log-analytics.bicep' = {
@@ -125,16 +115,16 @@ module appService 'modules/website.bicep' = {
     dockerRegistryImageTag: dockerRegistryImageTag
     containerRegistryName: containerRegistryName
     // Pass Application Insights settings
-    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
-    keyVaultResourceId: keyVault.outputs.keyVaultResourceId
+    keyVaultResourceId: keyVault.outputs.keyVaultResourceId // implicit dependency
     keyVaultSecretNameAdminUsername: keyVaultSecretNameAdminUsername
     keyVaultSecretNameAdminPassword0: keyVaultSecretNameAdminPassword0
     keyVaultSecretNameAdminPassword1: keyVaultSecretNameAdminPassword1
+    postgresSQLServerName: postgresSQLServerName
+    postgresSQLDatabaseName: postgresSQLDatabaseName
   }
   dependsOn: [
-    applicationDatabase
-    // i think the registry should be here aswell
     appInsights
   ]
 }
