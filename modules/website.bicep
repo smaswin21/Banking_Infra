@@ -20,9 +20,10 @@ param dockerRegistryImageName string
 param dockerRegistryImageTag string
 
 var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
-
+// added these 
 param appInsightsInstrumentationKey string
 param appInsightsConnectionString string
+param logAnalyticsWorkspaceId string
 
 
 
@@ -32,6 +33,7 @@ module containerRegistry './infrastructure/container-registry.bicep' = {
   params: {
     location: location
     registryName: containerRegistryName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
   }
 }
 

@@ -1,6 +1,8 @@
 param location string = resourceGroup().location
 param environmentType string = 'nonprod'
 param postgresSQLServerName string = 'ie-bank-db-server-dev'
+//adding diagnostic settings
+param logAnalyticsWorkspaceId string
 
 // based on prod non prod change the sku
 var skuName = environmentType == 'prod' ? 'Standard_B1ms' : 'Standard_B1ms'
@@ -38,6 +40,47 @@ resource postgresSQLServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01
     }
   }
 
+}
+
+
+resource postgreSQLDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'PostgreSQLServerDiagnostic'
+  scope: postgresSQLServer
+  properties: {
+    workspaceId: logAnalyticsWorkspaceId
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    logs: [
+      {
+        category: 'PostgreSQLLogs'
+        enabled: true
+      }
+      {
+        category: 'PostgreSQLFlexSessions'
+        enabled: true
+      }
+      {
+        category: 'PostgreSQLFlexQueryStoreRuntime'
+        enabled: true
+      }
+      {
+        category: 'PostgreSQLFlexQueryStoreWaitStats'
+        enabled: true
+      }
+      {
+        category: 'PostgreSQLFlexTableStats'
+        enabled: true
+      }
+      {
+        category: 'PostgreSQLFlexDatabaseXacts'
+        enabled: true
+      }
+    ]
+  }
 }
 
 

@@ -64,6 +64,7 @@ module keyVault 'modules/infrastructure/keyvault.bicep' = {
     keyVaultName: keyVaultName
     location: location
     roleAssignments: keyVaultRoleAssignments
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
   }
 }
 
@@ -74,6 +75,8 @@ module applicationDatabase 'modules/database.bicep' = {
     environmentType: environmentType
     postgresSQLServerName: postgresSQLServerName
     postgresSQLDatabaseName: postgresSQLDatabaseName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
+
   }
 
 }
@@ -117,10 +120,11 @@ module appService 'modules/website.bicep' = {
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
     containerRegistryName: containerRegistryName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
     // Pass Application Insights settings
     appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
-
+  
   }
   dependsOn: [
     applicationDatabase
