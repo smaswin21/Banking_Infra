@@ -6,7 +6,7 @@ param postgresSQLServerName string
 param postgresSQLDatabaseName string
 param logAnalyticsWorkspaceId string
 
-module postgresSQLServer 'postgres-sql-server.bicep' = {
+module postgresSQLServer './databases/postgres-sql-server.bicep' = {
   name: 'postgresSQLServer'
   params: {
     location: location
@@ -17,7 +17,7 @@ module postgresSQLServer 'postgres-sql-server.bicep' = {
 }
 
 
-module postgresSQLDatabase 'postgres-sql-database.bicep' = {
+module postgresSQLDatabase './databases/postgres-sql-database.bicep' = {
   name: 'postgresSQLDatabase'
   params: {
     postgresSQLServerName: postgresSQLServer.outputs.postgresSQLServerName

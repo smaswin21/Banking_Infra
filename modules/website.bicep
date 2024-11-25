@@ -28,7 +28,7 @@ param logAnalyticsWorkspaceId string
 
 
 // BACKEND
-module containerRegistry './container-registry.bicep' = {
+module containerRegistry './infrastructure/container-registry.bicep' = {
   name: 'containerRegistry'
   params: {
     location: location
@@ -37,7 +37,8 @@ module containerRegistry './container-registry.bicep' = {
   }
 }
 
-module appServicePlan './app-service-plan.bicep' = {
+
+module appServicePlan './applications/app-service-plan.bicep' = {
   name: 'appServicePlan'
   params: {
     location: location
@@ -46,7 +47,7 @@ module appServicePlan './app-service-plan.bicep' = {
   }
 }
 
-module appServiceBE './backend-app-service.bicep' = {
+module appServiceBE './applications/backend-app-service.bicep' = {
   name: 'backend'
   params: {
     location: location
@@ -102,40 +103,20 @@ module appServiceBE './backend-app-service.bicep' = {
       }
     ]
   }
-  dependsOn: [
-    containerRegistry
-    appServicePlan
-  ]
+  // dependencies are implicit
 }
 
 // FRONTEND
-resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
-  name: appServiceAppName
-  location: location
-  properties: {
-    serverFarmId: appServicePlan.outputs.id
-    httpsOnly: true
-    siteConfig: {
-      linuxFxVersion: 'NODE|18-lts'
-      alwaysOn: false
-      ftpsState: 'FtpsOnly'
-      appCommandLine: 'pm2 serve /home/site/wwwroot --spa --no-daemon'
-      appSettings: [
-          // Add Application Insights settings
-          {
-            name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-            value: appInsightsInstrumentationKey
-          }
-          {
-            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-            value: appInsightsConnectionString
-          }
-      ]
-    }
+
+module frontendApp './applications/frontend-app-service.bicep' = {
+  name: 'frontendAppService'
+  params: {
+    appServiceAppName: appServiceAppName
+    location: location
+    appServicePlanId: appServicePlan.outputs.id
+    appInsightsInstrumentationKey: appInsightsInstrumentationKey
+    appInsightsConnectionString: appInsightsConnectionString
   }
-  dependsOn: [
-    appServicePlan
-  ]
 }
 
-output appServiceAppHostName string = appServiceApp.properties.defaultHostName
+output appServiceAppHostName string = frontendApp.outputs.appServiceAppHostName

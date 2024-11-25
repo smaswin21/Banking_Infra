@@ -1,6 +1,8 @@
 param location string = resourceGroup().location
 param environmentType string = 'nonprod'
 param postgresSQLServerName string = 'ie-bank-db-server-dev'
+//adding diagnostic settings
+param logAnalyticsWorkspaceId string
 
 // based on prod non prod change the sku
 var skuName = environmentType == 'prod' ? 'Standard_B1ms' : 'Standard_B1ms'
@@ -40,8 +42,6 @@ resource postgresSQLServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01
 
 }
 
-//adding diagnostic settings
-param logAnalyticsWorkspaceId string
 
 resource postgreSQLDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'PostgreSQLServerDiagnostic'

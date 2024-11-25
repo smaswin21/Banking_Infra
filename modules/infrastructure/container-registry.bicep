@@ -1,3 +1,5 @@
+param ContainerRegistryDiagnostics string ='myDiagnosticSetting'
+param logAnalyticsWorkspaceId string
 @description('Name of the Azure Container Registry')
 param registryName string
 
@@ -18,13 +20,8 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' =
   }
 }
 
-output registryUserName string = containerRegistry.listCredentials().username
-output registryPassword0 string = containerRegistry.listCredentials().passwords[0].value
-output registryPassword1 string = containerRegistry.listCredentials().passwords[1].value
 
 //adding diagnostic settings
-param ContainerRegistryDiagnostics string ='myDiagnosticSetting'
-param logAnalyticsWorkspaceId string
 
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: ContainerRegistryDiagnostics
@@ -49,3 +46,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
     ]
   }
 }
+
+output registryUserName string = containerRegistry.listCredentials().username
+output registryPassword0 string = containerRegistry.listCredentials().passwords[0].value
+output registryPassword1 string = containerRegistry.listCredentials().passwords[1].value
