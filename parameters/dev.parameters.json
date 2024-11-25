@@ -50,15 +50,6 @@
         }
       ]
     },
-    "registryName": {
-      "value": "money404acrdev"
-    },
-    "sku": {
-      "value": "Basic"
-    },
-    "keyVaultResourceId": {
-      "value": "/subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/money404-kv-dev"
-    },
     "keyVaultSecretNameAdminUsername": {
       "value": "acr-username"
     },
