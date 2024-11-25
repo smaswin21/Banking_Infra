@@ -56,6 +56,13 @@ var logAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspac
 param keyVaultName string = 'ie-bank-kv-dev'
 @sys.description('The arrasy of role assignments for the Key Vault')
 param keyVaultRoleAssignments array = []
+@description('Name of the secret to store the admin username')
+param keyVaultSecretNameAdminUsername string
+@description('Name of the secret to store the admin password 0')
+param keyVaultSecretNameAdminPassword0 string
+
+@description('Name of the secret to store the admin password 1')
+param keyVaultSecretNameAdminPassword1 string
 
 
 module keyVault 'modules/infrastructure/keyvault.bicep' = {
@@ -120,7 +127,10 @@ module appService 'modules/website.bicep' = {
     // Pass Application Insights settings
     appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
-
+    keyVaultResourceId: keyVault.outputs.keyVaultResourceId
+    keyVaultSecretNameAdminUsername: keyVaultSecretNameAdminUsername
+    keyVaultSecretNameAdminPassword0: keyVaultSecretNameAdminPassword0
+    keyVaultSecretNameAdminPassword1: keyVaultSecretNameAdminPassword1
   }
   dependsOn: [
     applicationDatabase

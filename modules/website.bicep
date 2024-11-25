@@ -24,14 +24,29 @@ var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify a
 param appInsightsInstrumentationKey string
 param appInsightsConnectionString string
 
+param keyVaultResourceId string
+
+@description('Name of the secret to store the admin username')
+param keyVaultSecretNameAdminUsername string
+
+@description('Name of the secret to store the admin password 0')
+param keyVaultSecretNameAdminPassword0 string
+
+@description('Name of the secret to store the admin password 1')
+param keyVaultSecretNameAdminPassword1 string
+
 
 
 // BACKEND
 module containerRegistry './infrastructure/container-registry.bicep' = {
-  name: 'containerRegistry'
-  params: {
+name: 'containerRegistry'
+params: {
     location: location
     registryName: containerRegistryName
+    keyVaultResourceId: keyVaultResourceId
+    keyVaultSecretNameAdminUsername: keyVaultSecretNameAdminUsername
+    keyVaultSecretNameAdminPassword0: keyVaultSecretNameAdminPassword0
+    keyVaultSecretNameAdminPassword1: keyVaultSecretNameAdminPassword1
   }
 }
 
@@ -45,16 +60,21 @@ module appServicePlan './applications/app-service-plan.bicep' = {
   }
 }
 
+
+@description('Existing Key Vault resource')
+resource keyVaultReference 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: last(split(keyVaultResourceId, '/'))
+}
+
 module appServiceBE './applications/backend-app-service.bicep' = {
   name: 'backend'
   params: {
     location: location
     appServiceAPIAppName: appServiceAPIAppName
     appServicePlanId: appServicePlan.outputs.id
-
     containerRegistryName: containerRegistryName
-    dockerRegistryUserName: containerRegistry.outputs.registryUserName
-    dockerRegistryPassword: containerRegistry.outputs.registryPassword0
+    dockerRegistryUserName: keyVaultReference.getSecret(keyVaultSecretNameAdminUsername)
+    dockerRegistryPassword: keyVaultReference.getSecret(keyVaultSecretNameAdminPassword0)
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
 
