@@ -1,7 +1,8 @@
 param location string = resourceGroup().location
 param environmentType string = 'nonprod'
 param postgresSQLServerName string = 'ie-bank-db-server-dev'
-//adding diagnostic settings
+param postgreSQLAdminServicePrincipalObjectId string
+param postgreSQLAdminServicePrincipalName string
 param logAnalyticsWorkspaceId string
 
 // based on prod non prod change the sku
@@ -30,6 +31,8 @@ resource postgresSQLServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01
       geoRedundantBackup: 'Disabled'
     }
     version: '15'
+    authConfig: { activeDirectoryAuth: 'Enabled', passwordAuth: 'Enabled', tenantId: subscription().tenantId }
+
   }
 
   resource postgresSQLServerFirewallRules 'firewallRules@2022-12-01' = {
@@ -38,6 +41,18 @@ resource postgresSQLServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01
       endIpAddress: '0.0.0.0'
       startIpAddress: '0.0.0.0'
     }
+  }
+
+  resource postgreSQLAdministrators 'administrators@2022-12-01' = {
+    name: postgreSQLAdminServicePrincipalObjectId
+    properties: {
+      principalName: postgreSQLAdminServicePrincipalName
+      principalType: 'ServicePrincipal'
+      tenantId: subscription().tenantId
+    }
+    dependsOn: [
+      postgresSQLServerFirewallRules
+    ]
   }
 
 }

@@ -2,53 +2,62 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-      "environmentType": {
-          "value": "nonprod"
-      },
-      "postgresSQLServerName": {
-          "value": "money404-dbsrv-uat"
-      },
-      "postgresSQLDatabaseName": {
-          "value": "money404-db-uat"
-      },
-      "appServicePlanName": {
-          "value": "money404-asp-uat"
-      },
-      "appServiceAPIAppName": {
-          "value": "money404-be-uat"
-      },
-      "appServiceAppName": {
-          "value": "money404-fe-uat"
-      },
-      "location": {
-          "value": "North Europe"
-      },
-      "containerRegistryName": {
-        "value": "money404acruat"
-      },
-      "dockerRegistryImageName": {
-        "value": "money404-be-uat"
-      },
-      "dockerRegistryImageTag": {
-        "value": "latest"
-      },
-      "logAnalyticsWorkspaceName": {
-        "value": "money404-law-uat"
-      },
-      "appInsightsName": {
-        "value": "money404-appInsights-uat"
-      },
-        "keyVaultName": {
-            "value": "money404-kv-uat"
-      },
-        "keyVaultRoleAssignments": {
-            "value": [
-                {
-                    "principalId": "daa3436a-d1fb-44fe-b34b-053db433cdb7",
-                    "roleDefinitionIdOrName": "Key Vault Administrator",
-                    "principalType": "Group"
-                }
-            ]
+    "environmentType": {
+      "value": "nonprod"
+    },
+    "postgresSQLServerName": {
+      "value": "money404-dbsrv-uat"
+    },
+    "postgresSQLDatabaseName": {
+      "value": "money404-db-uat"
+    },
+    "appServicePlanName": {
+      "value": "money404-asp-uat"
+    },
+    "appServiceAPIAppName": {
+      "value": "money404-be-uat"
+    },
+    "appServiceAppName": {
+      "value": "money404-fe-uat"
+    },
+    "location": {
+      "value": "North Europe"
+    },
+    "containerRegistryName": {
+      "value": "money404acruat"
+    },
+    "dockerRegistryImageName": {
+      "value": "money404-be-uat"
+    },
+    "dockerRegistryImageTag": {
+      "value": "latest"
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "money404-law-uat"
+    },
+    "appInsightsName": {
+      "value": "money404-appInsights-uat"
+    },
+    "keyVaultName": {
+      "value": "money404-kv-uat"
+    },
+    "keyVaultRoleAssignments": {
+      "value": [
+        {
+          "principalId": "daa3436a-d1fb-44fe-b34b-053db433cdb7",
+          "roleDefinitionIdOrName": "Key Vault Administrator",
+          "principalType": "Group"
         }
+      ]
+    },
+    "keyVaultSecretNameAdminUsername": {
+      "value": "acr-username"
+    },
+    "keyVaultSecretNameAdminPassword0": {
+      "value": "acr-password0"
+    },
+    "keyVaultSecretNameAdminPassword1": {
+      "value": "acr-password1"
+    }
   }
 }

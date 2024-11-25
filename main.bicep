@@ -56,7 +56,13 @@ var logAnalyticsWorkspaceId = resourceId('Microsoft.OperationalInsights/workspac
 param keyVaultName string = 'ie-bank-kv-dev'
 @sys.description('The arrasy of role assignments for the Key Vault')
 param keyVaultRoleAssignments array = []
+@description('Name of the secret to store the admin username')
+param keyVaultSecretNameAdminUsername string
+@description('Name of the secret to store the admin password 0')
+param keyVaultSecretNameAdminPassword0 string
 
+@description('Name of the secret to store the admin password 1')
+param keyVaultSecretNameAdminPassword1 string
 
 module keyVault 'modules/infrastructure/keyvault.bicep' = {
   name: 'keyVault'
@@ -68,18 +74,6 @@ module keyVault 'modules/infrastructure/keyvault.bicep' = {
   }
 }
 
-module applicationDatabase 'modules/database.bicep' = {
-  name: 'applicationDatabase'
-  params: {
-    location: location
-    environmentType: environmentType
-    postgresSQLServerName: postgresSQLServerName
-    postgresSQLDatabaseName: postgresSQLDatabaseName
-    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
-
-  }
-
-}
 
 // Deploy Log Analytics Workspace
 module logAnalytics 'modules/infrastructure/log-analytics.bicep' = {
@@ -122,13 +116,17 @@ module appService 'modules/website.bicep' = {
     containerRegistryName: containerRegistryName
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
     // Pass Application Insights settings
-    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
-  
+    keyVaultResourceId: keyVault.outputs.keyVaultResourceId // implicit dependency
+    keyVaultSecretNameAdminUsername: keyVaultSecretNameAdminUsername
+    keyVaultSecretNameAdminPassword0: keyVaultSecretNameAdminPassword0
+    keyVaultSecretNameAdminPassword1: keyVaultSecretNameAdminPassword1
+    postgresSQLServerName: postgresSQLServerName
+    postgresSQLDatabaseName: postgresSQLDatabaseName
+
   }
   dependsOn: [
-    applicationDatabase
-    // i think the registry should be here aswell
     appInsights
   ]
 }

@@ -4,6 +4,8 @@ param location string = resourceGroup().location
 param environmentType string = 'nonprod'
 param postgresSQLServerName string
 param postgresSQLDatabaseName string
+param postgreSQLAdminServicePrincipalObjectId string
+param postgreSQLAdminServicePrincipalName string
 param logAnalyticsWorkspaceId string
 
 module postgresSQLServer './databases/postgres-sql-server.bicep' = {
@@ -12,6 +14,8 @@ module postgresSQLServer './databases/postgres-sql-server.bicep' = {
     location: location
     environmentType: environmentType
     postgresSQLServerName: postgresSQLServerName
+    postgreSQLAdminServicePrincipalObjectId: postgreSQLAdminServicePrincipalObjectId
+    postgreSQLAdminServicePrincipalName: postgreSQLAdminServicePrincipalName
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
   }
 }

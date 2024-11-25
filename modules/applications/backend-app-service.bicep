@@ -21,6 +21,10 @@ var dockerAppSettings = [
 resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
   name: appServiceAPIAppName
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
@@ -35,3 +39,4 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
 }
 
 output appServiceAppHostName string = appServiceAPIApp.properties.defaultHostName
+output systemAssignedIdentityPrincipalId string = appServiceAPIApp.identity.principalId

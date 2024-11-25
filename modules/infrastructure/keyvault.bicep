@@ -63,7 +63,6 @@ resource keyVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
   }
 ]
 
-
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: diagnosticSettingName
   scope: keyVault //  Key Vault resource
@@ -85,3 +84,4 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 }
 
 output keyVaultName string = keyVault.name
+output keyVaultResourceId string = keyVault.id
