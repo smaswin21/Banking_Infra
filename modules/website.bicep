@@ -141,6 +141,7 @@ module applicationDatabase './database.bicep' = {
     postgresSQLDatabaseName: postgresSQLDatabaseName
     postgreSQLAdminServicePrincipalObjectId: appServiceBE.outputs.systemAssignedIdentityPrincipalId
     postgreSQLAdminServicePrincipalName: appServiceAPIAppName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
   }
 }
 
