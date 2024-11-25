@@ -18,9 +18,6 @@ param environmentType string
 param containerRegistryName string
 param dockerRegistryImageName string
 param dockerRegistryImageTag string
-
-var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
-
 param appInsightsInstrumentationKey string
 param appInsightsConnectionString string
 
@@ -37,6 +34,14 @@ param keyVaultSecretNameAdminPassword1 string
 
 param postgresSQLServerName string
 param postgresSQLDatabaseName string
+// added these 
+param appInsightsInstrumentationKey string
+param appInsightsConnectionString string
+param logAnalyticsWorkspaceId string
+
+var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
+
+
 
 
 // BACKEND
@@ -49,6 +54,7 @@ module containerRegistry './infrastructure/container-registry.bicep' = {
     keyVaultSecretNameAdminUsername: keyVaultSecretNameAdminUsername
     keyVaultSecretNameAdminPassword0: keyVaultSecretNameAdminPassword0
     keyVaultSecretNameAdminPassword1: keyVaultSecretNameAdminPassword1
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
   }
 }
 
@@ -68,6 +74,7 @@ resource keyVaultReference 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: last(split(keyVaultResourceId, '/'))
 }
 
+
 module appServiceBE './applications/backend-app-service.bicep' = {
   name: 'backend'
   params: {
@@ -77,6 +84,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     containerRegistryName: containerRegistryName
     dockerRegistryUserName: keyVaultReference.getSecret(keyVaultSecretNameAdminUsername)
     dockerRegistryPassword: keyVaultReference.getSecret(keyVaultSecretNameAdminPassword0)
+
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
 
@@ -138,6 +146,7 @@ module applicationDatabase './database.bicep' = {
     postgreSQLAdminServicePrincipalName: appServiceAPIAppName
   }
 }
+
 
 // FRONTEND
 

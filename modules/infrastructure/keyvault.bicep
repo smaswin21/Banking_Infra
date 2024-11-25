@@ -2,6 +2,12 @@ param location string = resourceGroup().location
 param keyVaultName string = 'mykv${uniqueString(resourceGroup().id)}'
 param enableVaultForDeployment bool = true
 param roleAssignments array = []
+param diagnosticSettingName string ='myDiagnosticSetting'
+param logAnalyticsWorkspaceId string
+@description('The resource ID of the key vault.')
+output resourceId string = keyVault.id
+@description('The URI of the key vault.')
+output keyVaultUri string = keyVault.properties.vaultUri
 
 var builtInRoleNames = {
     'Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -57,6 +63,25 @@ resource keyVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
   }
 ]
 
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: diagnosticSettingName
+  scope: keyVault //  Key Vault resource
+  properties: {
+    workspaceId: logAnalyticsWorkspaceId // Log Analytics Workspace ID - sends logs and metrics to the Log Analytics Workspace using the ID
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    logs: [
+      {
+        category: 'AuditEvent'
+        enabled: true
+      }
+    ]
+  }
+}
 
 output keyVaultName string = keyVault.name
 output keyVaultResourceId string = keyVault.id

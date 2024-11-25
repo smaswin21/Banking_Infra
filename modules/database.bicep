@@ -6,6 +6,7 @@ param postgresSQLServerName string
 param postgresSQLDatabaseName string
 param postgreSQLAdminServicePrincipalObjectId string
 param postgreSQLAdminServicePrincipalName string
+param logAnalyticsWorkspaceId string
 
 module postgresSQLServer './databases/postgres-sql-server.bicep' = {
   name: 'postgresSQLServer'
@@ -15,6 +16,7 @@ module postgresSQLServer './databases/postgres-sql-server.bicep' = {
     postgresSQLServerName: postgresSQLServerName
     postgreSQLAdminServicePrincipalObjectId: postgreSQLAdminServicePrincipalObjectId
     postgreSQLAdminServicePrincipalName: postgreSQLAdminServicePrincipalName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
   }
 }
 

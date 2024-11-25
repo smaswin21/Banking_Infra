@@ -30,3 +30,4 @@ This folder contains shared infrastructure modules, such as monitoring, logging,
     - `location`: Deployment location.
     - `registryName`: Name of the container registry.
     - `sku`: SKU tier (`Basic`, `Standard`, `Premium`).
+    - `logAnalyticsWorkspaceId`: This is the id of our log analytics for the container registry to use via the diagnostics

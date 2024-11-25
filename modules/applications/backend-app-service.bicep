@@ -24,6 +24,7 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
   identity: {
     type: 'SystemAssigned'
   }
+
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true

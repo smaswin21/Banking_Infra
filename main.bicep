@@ -64,15 +64,16 @@ param keyVaultSecretNameAdminPassword0 string
 @description('Name of the secret to store the admin password 1')
 param keyVaultSecretNameAdminPassword1 string
 
-
 module keyVault 'modules/infrastructure/keyvault.bicep' = {
   name: 'keyVault'
   params: {
     keyVaultName: keyVaultName
     location: location
     roleAssignments: keyVaultRoleAssignments
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
   }
 }
+
 
 // Deploy Log Analytics Workspace
 module logAnalytics 'modules/infrastructure/log-analytics.bicep' = {
@@ -113,6 +114,7 @@ module appService 'modules/website.bicep' = {
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
     containerRegistryName: containerRegistryName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
     // Pass Application Insights settings
     appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
@@ -122,6 +124,7 @@ module appService 'modules/website.bicep' = {
     keyVaultSecretNameAdminPassword1: keyVaultSecretNameAdminPassword1
     postgresSQLServerName: postgresSQLServerName
     postgresSQLDatabaseName: postgresSQLDatabaseName
+
   }
   dependsOn: [
     appInsights
