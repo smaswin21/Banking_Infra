@@ -34,9 +34,6 @@ param keyVaultSecretNameAdminPassword1 string
 
 param postgresSQLServerName string
 param postgresSQLDatabaseName string
-// added these 
-param appInsightsInstrumentationKey string
-param appInsightsConnectionString string
 param logAnalyticsWorkspaceId string
 
 var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
