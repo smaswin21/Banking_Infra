@@ -84,10 +84,6 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
         category: 'AuditEvent' 
         enabled: true
       }
-      {
-        category: 'ResourceHealth' // Capture health and availability metrics
-        enabled: true
-      }
     ]
   }
 }
