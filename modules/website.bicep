@@ -140,6 +140,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     containerRegistry
     appServicePlan
     keyVaultReference
+    appInsights
   ]
 }
 
