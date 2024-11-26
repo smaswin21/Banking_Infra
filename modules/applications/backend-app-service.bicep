@@ -16,6 +16,7 @@ var dockerAppSettings = [
   { name: 'DOCKER_REGISTRY_SERVER_URL', value: 'https://${containerRegistryName}.azurecr.io'}
   { name: 'DOCKER_REGISTRY_SERVER_USERNAME', value: dockerRegistryUserName }
   { name: 'DOCKER_REGISTRY_SERVER_PASSWORD', value: dockerRegistryPassword }
+  { name: 'WEBSITES_PORT', value: '5000' }
 ]
 
 resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
