@@ -112,7 +112,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
       }
       {
         name: 'DBUSER'
-        value: appServiceAPIDBHostDBUSER
+        value: keyVaultReference.getSecret('backend-api-app-service-identity')
       }
       {
         name: 'FLASK_APP'
