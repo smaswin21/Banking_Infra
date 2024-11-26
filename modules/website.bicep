@@ -91,6 +91,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
+    keyVaultResourceId: keyVaultResourceId
 
     appSettings: [
       {

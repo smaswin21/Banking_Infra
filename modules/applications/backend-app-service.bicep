@@ -10,6 +10,7 @@ param dockerRegistryImageName string
 param dockerRegistryImageTag string = 'latest'
 param appSettings array = []
 param appCommandLine string = ''
+param keyVaultResourceId string
 
 @description('Application Insights Instrumentation Key for monitoring')
 param appInsightsInstrumentationKey string
@@ -60,6 +61,7 @@ resource adminCredentialsKeyVault 'Microsoft.KeyVault/vaults@2021-10-01' existin
 // add the managed identity of the app service to the key vault as a secret
 resource appServiceKeyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2021-10-01' = {
   name: 'backend-api-app-service-identity'
+  parent: adminCredentialsKeyVault
   properties: {
     value: appServiceAPIApp.identity.principalId
   }
