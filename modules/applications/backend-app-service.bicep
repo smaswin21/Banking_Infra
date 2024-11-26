@@ -1,4 +1,3 @@
-
 param location string = resourceGroup().location
 param appServiceAPIAppName string
 param appServicePlanId string
@@ -11,6 +10,7 @@ param dockerRegistryImageName string
 param dockerRegistryImageTag string = 'latest'
 param appSettings array = []
 param appCommandLine string = ''
+
 @description('Application Insights Instrumentation Key for monitoring')
 param appInsightsInstrumentationKey string
 
@@ -18,7 +18,7 @@ param appInsightsInstrumentationKey string
 param appInsightsConnectionString string
 
 var dockerAppSettings = [
-  { name: 'DOCKER_REGISTRY_SERVER_URL', value: 'https://${containerRegistryName}.azurecr.io'}
+  { name: 'DOCKER_REGISTRY_SERVER_URL', value: 'https://${containerRegistryName}.azurecr.io' }
   { name: 'DOCKER_REGISTRY_SERVER_USERNAME', value: dockerRegistryUserName }
   { name: 'DOCKER_REGISTRY_SERVER_PASSWORD', value: dockerRegistryPassword }
 ]
@@ -30,13 +30,15 @@ var appInsightsSettings = [
   { name: 'XDT_MicrosoftApplicationInsights_NodeJS', value: '1' }
 ]
 
+var mergedAppSettings = concat(appSettings, dockerAppSettings, appInsightsSettings)
+
+
 resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
   name: appServiceAPIAppName
   location: location
   identity: {
     type: 'SystemAssigned'
   }
-
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
@@ -45,7 +47,7 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
       alwaysOn: false
       ftpsState: 'FtpsOnly'
       appCommandLine: appCommandLine
-      appSettings: union(appSettings, dockerAppSettings, appInsightsSettings )
+      appSettings: mergedAppSettings
     }
   }
 }
