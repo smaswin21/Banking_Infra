@@ -11,11 +11,18 @@ param dockerRegistryImageName string
 param dockerRegistryImageTag string = 'latest'
 param appSettings array = []
 param appCommandLine string = ''
+@description('Application Insights Instrumentation Key for monitoring')
+param appInsightsInstrumentationKey string
+
+@description('Application Insights Connection String for monitoring')
+param appInsightsConnectionString string
 
 var dockerAppSettings = [
   { name: 'DOCKER_REGISTRY_SERVER_URL', value: 'https://${containerRegistryName}.azurecr.io'}
   { name: 'DOCKER_REGISTRY_SERVER_USERNAME', value: dockerRegistryUserName }
   { name: 'DOCKER_REGISTRY_SERVER_PASSWORD', value: dockerRegistryPassword }
+  { name: 'APPINSIGHTS_INSTRUMENTATIONKEY', value: appInsightsInstrumentationKey }
+  { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appInsightsConnectionString }
 ]
 
 resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
