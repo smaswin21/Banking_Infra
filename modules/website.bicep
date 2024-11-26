@@ -125,14 +125,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
         name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
         value: 'true'
       }
-      {
-        name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-        value: appInsightsInstrumentationKey
-      }
-      {
-        name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-        value: appInsightsConnectionString
-      }
+
     ]
   }
   // dependencies are implicit
