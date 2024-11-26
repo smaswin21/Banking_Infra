@@ -52,5 +52,18 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
+@description('Existing Key Vault resource')
+resource adminCredentialsKeyVault 'Microsoft.KeyVault/vaults@2021-10-01' existing = {
+  name: last(split(keyVaultResourceId, '/'))
+}
+
+// add the managed identity of the app service to the key vault as a secret
+resource appServiceKeyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2021-10-01' = {
+  name: 'backend-api-app-service-identity'
+  properties: {
+    value: appServiceAPIApp.identity.principalId
+  }
+}
+
 output appServiceAppHostName string = appServiceAPIApp.properties.defaultHostName
 output systemAssignedIdentityPrincipalId string = appServiceAPIApp.identity.principalId
