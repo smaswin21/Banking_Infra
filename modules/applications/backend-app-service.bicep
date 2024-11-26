@@ -21,8 +21,13 @@ var dockerAppSettings = [
   { name: 'DOCKER_REGISTRY_SERVER_URL', value: 'https://${containerRegistryName}.azurecr.io'}
   { name: 'DOCKER_REGISTRY_SERVER_USERNAME', value: dockerRegistryUserName }
   { name: 'DOCKER_REGISTRY_SERVER_PASSWORD', value: dockerRegistryPassword }
+]
+
+var appInsightsSettings = [
   { name: 'APPINSIGHTS_INSTRUMENTATIONKEY', value: appInsightsInstrumentationKey }
   { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appInsightsConnectionString }
+  { name: 'ApplicationInsightsAgent_EXTENSION_VERSION', value: '~3' }
+  { name: 'XDT_MicrosoftApplicationInsights_NodeJS', value: '1' }
 ]
 
 resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
@@ -40,7 +45,7 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
       alwaysOn: false
       ftpsState: 'FtpsOnly'
       appCommandLine: appCommandLine
-      appSettings: union(appSettings, dockerAppSettings)
+      appSettings: union(appSettings, dockerAppSettings, appInsightsSettings )
     }
   }
 }
