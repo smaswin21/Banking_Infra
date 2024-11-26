@@ -17,6 +17,8 @@ var dockerAppSettings = [
   { name: 'DOCKER_REGISTRY_SERVER_USERNAME', value: dockerRegistryUserName }
   { name: 'DOCKER_REGISTRY_SERVER_PASSWORD', value: dockerRegistryPassword }
   { name: 'WEBSITES_PORT', value: '5000' }
+  { name: 'DOCKER_ENABLE_CI', value: 'true' } // Enables container logs
+
 ]
 
 resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
@@ -35,6 +37,7 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
       ftpsState: 'FtpsOnly'
       appCommandLine: appCommandLine
       appSettings: union(appSettings, dockerAppSettings)
+      detailedErrorLoggingEnabled: true
     }
   }
 }
