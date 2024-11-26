@@ -38,8 +38,14 @@ param logAnalyticsWorkspaceId string
 
 var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
 
-
-
+module appInsights './infrastructure/app-insights.bicep' = {
+  name: 'appInsights'
+  params: {
+    location: location
+    appInsightsName: appServiceAppName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId // Pass log analytics reference to Application Insights
+  }
+}
 
 // BACKEND
 module containerRegistry './infrastructure/container-registry.bicep' = {
@@ -81,7 +87,8 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     containerRegistryName: containerRegistryName
     dockerRegistryUserName: keyVaultReference.getSecret(keyVaultSecretNameAdminUsername)
     dockerRegistryPassword: keyVaultReference.getSecret(keyVaultSecretNameAdminPassword0)
-
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
+    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
 
@@ -118,14 +125,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
         name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
         value: 'true'
       }
-      {
-        name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-        value: appInsightsInstrumentationKey
-      }
-      {
-        name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-        value: appInsightsConnectionString
-      }
+
     ]
   }
   // dependencies are implicit
@@ -133,6 +133,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     containerRegistry
     appServicePlan
     keyVaultReference
+    appInsights
   ]
 }
 
