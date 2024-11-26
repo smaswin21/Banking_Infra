@@ -31,7 +31,11 @@ var appInsightsSettings = [
   { name: 'XDT_MicrosoftApplicationInsights_NodeJS', value: '1' }
 ]
 
-var mergedAppSettings = concat(appSettings, dockerAppSettings, appInsightsSettings)
+var identityPrincipalIdSetting = [
+  { name: 'DBUSER', value: appServiceAPIApp.identity.principalId }
+]
+
+var mergedAppSettings = concat(appSettings, dockerAppSettings, appInsightsSettings, identityPrincipalIdSetting)
 
 
 resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
