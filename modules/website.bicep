@@ -91,7 +91,6 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
-    keyVaultResourceId: keyVaultResourceId
 
     appSettings: [
       {
@@ -112,7 +111,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
       }
       {
         name: 'DBUSER'
-        value: appServiceAPIDBHostDBUSER
+        value: appServiceAPIAppName
       }
       {
         name: 'FLASK_DEBUG'
