@@ -55,10 +55,12 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
 }
 
 resource appServiceAPIAppSettings 'Microsoft.Web/sites/config@2022-03-01' = {
+// append DBUSER: appServiceAPIApp.identity.principalId to all the other app settings
   name: '${appServiceAPIAppName}/appsettings'
-  properties: {
-    DBUSER: appServiceAPIApp.identity.principalId
-  }
+  parent: appServiceAPIApp
+  properties: union(mergedAppSettings, [
+    { name: 'DBUSER', value: appServiceAPIApp.identity.principalId }
+  ])
   dependsOn: [
     appServiceAPIApp
   ]
