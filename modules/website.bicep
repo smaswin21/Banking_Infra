@@ -1,6 +1,8 @@
 param location string = resourceGroup().location
 param appServicePlanName string
 param appServiceAppName string
+@description('The name of the Application Insights resource')
+param appInsightsName string
 param appServiceAPIAppName string
 param appServiceAPIEnvVarENV string
 param appServiceAPIEnvVarDBHOST string
@@ -18,8 +20,6 @@ param environmentType string
 param containerRegistryName string
 param dockerRegistryImageName string
 param dockerRegistryImageTag string
-param appInsightsInstrumentationKey string
-param appInsightsConnectionString string
 
 param keyVaultResourceId string
 
@@ -42,8 +42,9 @@ module appInsights './infrastructure/app-insights.bicep' = {
   name: 'appInsights'
   params: {
     location: location
-    appInsightsName: appServiceAppName
+    appInsightsName: appInsightsName
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId // Pass log analytics reference to Application Insights
+    keyVaultResourceId: keyVaultResourceId
   }
 }
 
@@ -160,8 +161,8 @@ module frontendApp './applications/frontend-app-service.bicep' = {
     appServiceAppName: appServiceAppName
     location: location
     appServicePlanId: appServicePlan.outputs.id
-    appInsightsInstrumentationKey: appInsightsInstrumentationKey
-    appInsightsConnectionString: appInsightsConnectionString
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
+    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
   }
 }
 

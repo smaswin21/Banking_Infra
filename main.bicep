@@ -84,18 +84,6 @@ module logAnalytics 'modules/infrastructure/log-analytics.bicep' = {
   }
 }
 
-module appInsights 'modules/infrastructure/app-insights.bicep' = {
-  name: 'appInsights'
-  params: {
-    location: location
-    appInsightsName: appInsightsName
-    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
-  }
-  dependsOn: [
-    logAnalytics
-  ]
-}
-
 module appService 'modules/website.bicep' = {
   name: 'appService'
   params: {
@@ -116,8 +104,9 @@ module appService 'modules/website.bicep' = {
     containerRegistryName: containerRegistryName
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
     // Pass Application Insights settings
-    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
-    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
+    appInsightsName: appInsightsName
+//    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
+//    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
     keyVaultResourceId: keyVault.outputs.keyVaultResourceId // implicit dependency
     keyVaultSecretNameAdminUsername: keyVaultSecretNameAdminUsername
     keyVaultSecretNameAdminPassword0: keyVaultSecretNameAdminPassword0
@@ -126,13 +115,8 @@ module appService 'modules/website.bicep' = {
     postgresSQLDatabaseName: postgresSQLDatabaseName
 
   }
-  dependsOn: [
-    appInsights
-  ]
 }
 
 output appServiceAppHostName string = appService.outputs.appServiceAppHostName
 output logAnalyticsWorkspaceId string = logAnalytics.outputs.logAnalyticsWorkspaceId
 output logAnalyticsWorkspaceName string = logAnalytics.outputs.logAnalyticsWorkspaceName
-output appInsightsInstrumentationKey string = appInsights.outputs.appInsightsInstrumentationKey
-output appInsightsConnectionString string = appInsights.outputs.appInsightsConnectionString
