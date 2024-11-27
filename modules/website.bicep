@@ -111,6 +111,10 @@ module appServiceBE './applications/backend-app-service.bicep' = {
         value: appServiceAPIEnvVarDBPASS
       }
       {
+        name: 'DBUSER'
+        value: appServiceAPIDBHostDBUSER
+      }
+      {
         name: 'FLASK_DEBUG'
         value: appServiceAPIDBHostFLASK_DEBUG
       }
