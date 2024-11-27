@@ -20,7 +20,7 @@
     "appServiceAppName": {
       "value": "money404-fe-uat"
     },
-    "staticappServiceAppName": {
+    "staticWebAppName": {
       "value": "money404-swa-uat"
     },
     "location": {
