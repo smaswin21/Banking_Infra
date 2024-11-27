@@ -67,7 +67,9 @@ param keyVaultSecretNameAdminPassword1 string
 @maxLength(24)
 param staticWebAppName string = 'ie-bank-swa-dev'
 @sys.description('The location where the Static Web App will be deployed')
-param swaLocation string = location
+param swaLocation string
+@sys.description('The SKU of the App Service Plan')
+param sku string
 
 
 module keyVault 'modules/infrastructure/keyvault.bicep' = {
@@ -123,6 +125,8 @@ module appService 'modules/website.bicep' = {
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
     //static web app
     staticappServiceAppName: staticWebAppName
+    sku: sku
+    locationswa: swaLocation
     // Pass Application Insights settings
     appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
@@ -139,21 +143,13 @@ module appService 'modules/website.bicep' = {
   ]
 }
 
-module staticWebApp 'br/public:avm/res/web/static-site:0.3.0' = {
-  name: 'staticWebApp'
-  params: {
-    name: staticWebAppName
-    location: swaLocation
-    sku: 'Standard'
-  }
-}
-
 
 output appServiceAppHostName string = appService.outputs.appServiceAppHostName
 output logAnalyticsWorkspaceId string = logAnalytics.outputs.logAnalyticsWorkspaceId
 output logAnalyticsWorkspaceName string = logAnalytics.outputs.logAnalyticsWorkspaceName
 output appInsightsInstrumentationKey string = appInsights.outputs.appInsightsInstrumentationKey
 output appInsightsConnectionString string = appInsights.outputs.appInsightsConnectionString
-output staticWebAppEndpoint string = staticWebApp.outputs.defaultHostname
-output staticWebAppResourceName string = staticWebApp.outputs.name
+output staticWebAppEndpoint string = appService.outputs.staticWebAppEndpoint
+output staticWebAppResourceName string = appService.outputs.staticWebAppResourceName
+
 

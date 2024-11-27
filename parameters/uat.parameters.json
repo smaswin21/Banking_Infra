@@ -20,8 +20,17 @@
     "appServiceAppName": {
       "value": "money404-fe-uat"
     },
+    "staticappServiceAppName": {
+      "value": "money404-swa-uat"
+    },
     "location": {
       "value": "North Europe"
+    },
+    "sku": {
+      "value": "Standard"
+    },
+    "locationswa" : {
+      "value": "West Europe"
     },
     "containerRegistryName": {
       "value": "money404acruat"

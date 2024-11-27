@@ -39,6 +39,8 @@ param logAnalyticsWorkspaceId string
 
 var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
 
+param sku string
+param locationswa string
 
 
 
@@ -163,8 +165,12 @@ module frontendApp './applications/frontend-app-service.bicep' = {
     appInsightsInstrumentationKey: appInsightsInstrumentationKey
     appInsightsConnectionString: appInsightsConnectionString
     name: staticappServiceAppName  // Name for the static web app
-    sku: 'Standard'         // Set appropriate SKU for Static Web App
+    sku: sku         // Set appropriate SKU for Static Web App
+    locationswa: locationswa
   }
 }
 
 output appServiceAppHostName string = frontendApp.outputs.appServiceAppHostName
+output staticWebAppEndpoint string = frontendApp.outputs.staticWebAppEndpoint
+output staticWebAppResourceName string = frontendApp.outputs.staticWebAppResourceName
+
