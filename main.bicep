@@ -142,7 +142,7 @@ module staticWebApp 'br/public:avm/res/web/static-site:0.3.0' = {
   params: {
     name: staticWebAppName
     location: swaLocation
-    sku: 'Free'
+    sku: 'Standard'
   }
 }
 
