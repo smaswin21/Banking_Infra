@@ -104,6 +104,7 @@ module appService 'modules/website.bicep' = {
     containerRegistryName: containerRegistryName
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
     // Pass Application Insights settings
+    appInsightsName: appInsightsName
 //    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
 //    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
     keyVaultResourceId: keyVault.outputs.keyVaultResourceId // implicit dependency

@@ -1,6 +1,8 @@
 param location string = resourceGroup().location
 param appServicePlanName string
 param appServiceAppName string
+@description('The name of the Application Insights resource')
+param appInsightsName string
 param appServiceAPIAppName string
 param appServiceAPIEnvVarENV string
 param appServiceAPIEnvVarDBHOST string
@@ -40,7 +42,7 @@ module appInsights './infrastructure/app-insights.bicep' = {
   name: 'appInsights'
   params: {
     location: location
-    appInsightsName: appServiceAppName
+    appInsightsName: appInsightsName
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId // Pass log analytics reference to Application Insights
     keyVaultResourceId: keyVaultResourceId
   }
