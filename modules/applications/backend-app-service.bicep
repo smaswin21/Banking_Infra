@@ -54,17 +54,20 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
-
+var existingAppSettings = list('${appServiceAPIApp.id}/config/appsettings', '2022-03-01').properties
+var newAppSetting = {
+  'DBUSER': appServiceAPIApp.identity.principalId
+}
+var mergedAppSettingsNew = union(existingAppSettings, newAppSetting)
 resource appServiceAPIAppSettings 'Microsoft.Web/sites/config@2022-03-01' = {
-// append DBUSER: appServiceAPIApp.identity.principalId to all the other app settings
   name: '${appServiceAPIAppName}/appsettings'
-  properties: union(mergedAppSettings, [
-    { name: 'DBUSER', value: '${appServiceAPIApp.identity.principalId}' }
-  ])
+  properties: mergedAppSettingsNew
   dependsOn: [
     appServiceAPIApp
   ]
 }
+
+
 
 @description('Existing Key Vault resource')
 resource adminCredentialsKeyVault 'Microsoft.KeyVault/vaults@2021-10-01' existing = {
