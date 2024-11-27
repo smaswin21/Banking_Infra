@@ -3,13 +3,14 @@ name: ie-bank-infra
 on:
   workflow_dispatch:
   pull_request:
-      branches:
-        - main
+    branches:
+      - main
   push:
-      branches:
-        - '*'
-      paths-ignore:
-        - 'scripts/**'
+    branches:
+      - '*'
+    paths-ignore:
+      - 'scripts/**'
+
 env:
   RESOURCE_GROUP_DEV: BCSAI2024-DEVOPS-STUDENTS-B-DEV
   RESOURCE_GROUP_UAT: BCSAI2024-DEVOPS-STUDENTS-B-UAT
@@ -20,7 +21,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-
       # Checkout code
     - uses: actions/checkout@v3
 
@@ -28,8 +28,8 @@ jobs:
     - name: Run Bicep linter
       run: az bicep build --file ./main.bicep --only-show-errors --output json
 
-    # checkov
-    - name: Run checkov
+      # Run Checkov for security scanning
+    - name: Run Checkov
       uses: bridgecrewio/checkov-action@master
       with:
         directory: './'
@@ -51,7 +51,6 @@ jobs:
       name: 'Development'
 
     steps:
-
       # Checkout code
     - uses: actions/checkout@v3
 
@@ -60,16 +59,25 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Deploy Bicep file
-    - name: deploy
+      # Deploy Bicep file with Static Web App and other resources
+    - name: Deploy Infrastructure (Dev)
       uses: azure/arm-deploy@v1
       with:
+        scope: 'Resource Group'
         subscriptionId: ${{ env.SUBSCRIPTION_ID_DEV }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_DEV }}
         template: ./main.bicep
-        parameters: ./parameters/dev.parameters.json appServiceAPIEnvVarENV=${{ vars.ENV }} appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }} appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }} appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }} appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }} appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }} appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
+        parameters: ./parameters/dev.parameters.json
+          appServiceAPIEnvVarENV=${{ vars.ENV }}
+          appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }}
+          appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }}
+          appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }}
+          appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
+          appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
+          appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
+          staticWebAppName=ie-bank-swa-dev
+          swaLocation=centralus
         deploymentName: ${{ env.USER_ALIAS }}
-        # somtimes the deployment fails because of a warning, this will ignore the warning and continue the deployment
         failOnStdErr: false
 
   deploy-uat:
@@ -80,22 +88,37 @@ jobs:
       name: 'UAT'
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Download Bicep build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: bicep-build
+      # Checkout code
+    - uses: actions/checkout@v3
 
-      - uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # Download Bicep build artifact
+    - name: Download Bicep build artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: bicep-build
 
-      - name: Deploy to uat
-        uses: azure/arm-deploy@v2
-        with:
-          subscriptionId: ${{ env.SUBSCRIPTION_ID_DEV }}
-          resourceGroupName: ${{ env.RESOURCE_GROUP_UAT }}
-          template: ./main.bicep
-          parameters: ./parameters/uat.parameters.json appServiceAPIEnvVarENV=${{ vars.ENV }} appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }} appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }} appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }} appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }} appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }} appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
-          deploymentName: ${{ env.USER_ALIAS }}-uat
-          failOnStdErr: false
+      # Log into Azure
+    - uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Deploy Bicep file with Static Web App and other resources
+    - name: Deploy Infrastructure (UAT)
+      uses: azure/arm-deploy@v1
+      with:
+        scope: 'Resource Group'
+        subscriptionId: ${{ env.SUBSCRIPTION_ID_DEV }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_UAT }}
+        template: ./main.bicep
+        parameters: ./parameters/uat.parameters.json
+          appServiceAPIEnvVarENV=${{ vars.ENV }}
+          appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }}
+          appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }}
+          appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }}
+          appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
+          appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
+          appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
+          staticWebAppName=ie-bank-swa-uat
+          swaLocation=centralus
+        deploymentName: ${{ env.USER_ALIAS }}-uat
+        failOnStdErr: false
