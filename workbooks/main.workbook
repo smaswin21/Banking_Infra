@@ -1,0 +1,411 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## MONEY404-Bank Monitoring Strategy Overview\n\nThis workbook provides a comprehensive overview of our monitoring strategy for the MONEY404-Bank web application, focusing on Service Level Agreements (SLAs), Service Level Objectives (SLOs), and Service Level Indicators (SLIs). \n\n- **SLA**: We guarantee 99% uptime and high performance, ensuring our stakeholders receive reliable service with minimal disruptions.\n- **SLO**: Key targets include 90% uptime, 95% of API requests processed under 500 ms, and page load times under 2 seconds.\n- **SLI**: We actively monitor key indicators like API response time, error rate, and uptime using Azure Monitor, Application Insights, and Log Analytics Workspace.\n\nThis workbook aims to ensure operational resilience, application reliability, and overall stakeholder satisfaction through continuous tracking and assessment of our SLAs, SLOs, and SLIs.\n"
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "union withsource=[\"$TableName\"] *\n| summarize Count=count() by TableName=[\"$TableName\"]\n| render barchart",
+        "size": 1,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "query - 2"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Overview of application - USAGE"
+      },
+      "name": "text - 4"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "union requests, customEvents\n| summarize Count = count(), CountFailed = countif(success == false), SuccessPercentage = (countif(success == true) * 100.0 / count()), Users = dcount(user_Id) by appName, name\n| order by Count desc\n| project appName, name, CountFailed, Count, SuccessPercentage, Users\n",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "query - 3"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let usg_events = dynamic([\"*\"]);\nlet mainTable = union pageViews, customEvents, requests\n    | where timestamp > ago(1d)\n    | where isempty(operation_SyntheticSource)\n    | extend name =replace(\"\\n\", \"\", name)\n    | where '*' in (usg_events) or name in (usg_events)\n;\nlet queryTable = mainTable;\nlet cohortedTable = queryTable\n    | extend dimension =tostring(client_CountryOrRegion)\n    | extend dimension = iif(isempty(dimension), \"<undefined>\", dimension)\n    | summarize hll = hll(user_Id) by tostring(dimension)\n    | extend Users = dcount_hll(hll)\n    | order by Users desc\n    | serialize rank = row_number()\n    | extend dimension = iff(rank > 5, 'Other', dimension)\n    | summarize merged = hll_merge(hll) by tostring(dimension)\n    | project [\"Country or region\"] = dimension, Counts = dcount_hll(merged);\ncohortedTable",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "query - 28"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let usg_events = dynamic([\"*\"]);\nlet mainTable = union pageViews, customEvents, requests\n    | where timestamp > ago(1d)\n    | where isempty(operation_SyntheticSource)\n    | extend name =replace(\"\\n\", \"\", name)\n    | where '*' in (usg_events) or name in (usg_events)\n;\nlet queryTable = mainTable;\nlet cohortedTable = queryTable \n    | extend dimension = tostring(client_Browser)\n    | extend dimension = iif(isempty(dimension), \"<undefined>\", dimension)\n    | summarize hll = hll(user_Id) by tostring(dimension)\n    | extend Browser = dcount_hll(hll)\n    | order by Browser desc\n    | serialize rank = row_number()\n    | extend dimension = iff(rank > 5, 'Other', dimension)\n    | summarize merged = hll_merge(hll) by tostring(dimension)\n    | project [\"Browser version\"]  = dimension, Counts = dcount_hll(merged);\ncohortedTable",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "query - 30"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let usg_events = dynamic([\"*\"]);\nlet mainTable = union pageViews, customEvents, requests\n    | where timestamp > ago(1d)\n    | where isempty(operation_SyntheticSource)\n    | extend name =replace(\"\\n\", \"\", name)\n    | where '*' in (usg_events) or name in (usg_events)\n;\nlet queryTable = mainTable;\nlet cohortedTable = queryTable\n    | extend dimension = tostring(client_OS)\n    | extend dimension = iif(isempty(dimension), \"<undefined>\", dimension)\n    | summarize hll = hll(user_Id) by tostring(dimension)\n    | extend Users = dcount_hll(hll)\n    | order by Users desc\n    | serialize rank = row_number()\n    | extend dimension = iff(rank > 5, 'Other', dimension)\n    | summarize merged = hll_merge(hll) by tostring(dimension)\n    | project [\"Operating system\"] = dimension, Counts = dcount_hll(merged);\ncohortedTable",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "query - 29"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Details of All Operations - Failed Operations Over Time"
+      },
+      "name": "text - 6"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "union requests, customEvents\n| where success == false\n| summarize FailedRequests = count() by bin(timestamp, 1h)\n| project timestamp, FailedRequests\n",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "visualization": "timechart"
+      },
+      "name": "query - 5"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Overall Operations Trend"
+      },
+      "name": "text - 8"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "union requests, customEvents\n| summarize TotalRequests = count() by bin(timestamp, 1h)\n| project timestamp, TotalRequests\n",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "visualization": "linechart"
+      },
+      "name": "query - 7"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## SLO Monitoring - Average API Response Time"
+      },
+      "name": "text - 10"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "union requests, customEvents\n| where success == true\n| summarize AverageResponseTime = avg(duration) by bin(timestamp, 1h)\n| extend SLAResponseThreshold = 500\n| project timestamp, AverageResponseTime, SLAResponseThreshold\n",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "query - 9"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## SLI Monitoring - Analysis ERROR"
+      },
+      "name": "text - 12"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| summarize TotalRequests = count(), FailedRequests = countif(success == false) by bin(timestamp, 1h)\n| extend ErrorRate = (todouble(FailedRequests) / todouble(TotalRequests)) * 100\n| project timestamp, ErrorRate\n",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "visualization": "barchart"
+      },
+      "name": "query - 11"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "This table shows all failing requests in your app and their result codes - sorted by users impacted. This information will help you know the various failures in your app and their severity. The report also indicates if a failure is new or existing - so you see failures just started happening -- usually the most interesting ones."
+      },
+      "name": "text - 27"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let startTime = ago(1d);\nlet grain = 30m;\nlet bigWindowTimeRange = 7d;\nlet bigWindow = requests\n    | where timestamp >= ago(bigWindowTimeRange) and timestamp < bin(startTime, grain)\n    | where success == false\n    | where operation_Name in ('*') or '*' in ('*')\n    | where name in ('*') or '*' in ('*')\n    | where resultCode in ('*')\n        or '*' in ('*')\n        or iff('@' in ('*'), resultCode startswith '5', false)\n        or iff('#' in ('*'), resultCode startswith '4', false)\n    | summarize by name, resultCode\n    | summarize makelist(strcat(name, '-', resultCode), 10000);\nrequests\n| where timestamp > ago(1d)\n| where operation_Name in ('*') or '*' in ('*')\n| where name in ('*') or '*' in ('*')\n| where resultCode in ('*')\n    or '*' in ('*')\n    or iff('@' in ('*'), resultCode startswith '5', false)\n    or iff('#' in ('*'), resultCode startswith '4', false)\n| where success == false\n| summarize Count = count(), Users = dcount(user_Id) by name, resultCode\n| extend IsNew = strcat(name, '-', resultCode) !in (bigWindow)\n| where \"['New Failure Rate (%)'], ['Existing Failure Rate (%)']\" == \"['New Failure Rate (%)'], ['Existing Failure Rate (%)']\" or IsNew == true\n| order by Users desc, Count desc, name asc\n| project\n    ['Request Name'] = iff(IsNew, strcat('🔸 ', name), strcat('🔹 ', name)),\n    ['Failed with Result Code'] = resultCode,\n    ['Request Failures'] = Count,\n    ['Users Affected'] = Users",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "query - 26"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## SLI Monitoring - Page Load Time\n"
+      },
+      "name": "text - 14"
+    },
+    {
+      "type": 10,
+      "content": {
+        "chartId": "bfade322-b2b7-41e1-b906-c1548b3eef87",
+        "version": "MetricsItem/2.0",
+        "size": 0,
+        "chartType": 3,
+        "resourceType": "microsoft.insights/components",
+        "metricScope": 0,
+        "resourceIds": [
+          "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourcegroups/bcsai2024-devops-students-b-dev/providers/microsoft.insights/components/money404-appinsights-dev"
+        ],
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "metrics": [
+          {
+            "namespace": "microsoft.insights/components",
+            "metric": "microsoft.insights/components-Browser-browserTimings/networkDuration",
+            "aggregation": 4
+          },
+          {
+            "namespace": "microsoft.insights/components",
+            "metric": "microsoft.insights/components-Browser-browserTimings/processingDuration",
+            "aggregation": 4
+          },
+          {
+            "namespace": "microsoft.insights/components",
+            "metric": "microsoft.insights/components-Browser-browserTimings/sendDuration",
+            "aggregation": 4
+          },
+          {
+            "namespace": "microsoft.insights/components",
+            "metric": "microsoft.insights/components-Browser-browserTimings/receiveDuration",
+            "aggregation": 4
+          }
+        ],
+        "title": "Average page load time breakdown",
+        "gridSettings": {
+          "rowLimit": 10000
+        }
+      },
+      "name": "metric - 27"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## SLA Monitoring - Uptime Percentage\nuptime percentage for your application requests "
+      },
+      "name": "text - 16"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "union requests, customEvents\n| where timestamp > ago(7d) // Last 7 days\n| summarize TotalRequests = count(), SuccessfulRequests = countif(success == true)\n| extend UptimePercentage = (SuccessfulRequests * 100.0) / TotalRequests\n| extend SLAThreshold = 99.95\n| project UptimePercentage, SLAThreshold\n",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "visualization": "table",
+        "graphSettings": {
+          "type": 0
+        }
+      },
+      "name": "query - 2"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Request Count by Operation Type "
+      },
+      "name": "text - 18"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "union requests, customEvents\n| where timestamp > ago(7d) // Last 7 days\n| summarize TotalRequests = count() by name // Count of requests per endpoint\n| top 10 by TotalRequests desc\n| project name, TotalRequests\n",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "query - 17"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## API Latency by Operation"
+      },
+      "name": "text - 20"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "union requests, customEvents\n| where timestamp > ago(7d) // Last 7 days\n| summarize AvgLatency = avg(duration) by name\n| project name, AvgLatency\n| order by AvgLatency desc\n",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "query - 19"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Frontend and Backend Request Analysis (Identify Load Balancing Effectiveness)"
+      },
+      "name": "text - 22"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "union requests, customEvents\n| where timestamp > ago(7d) // Last 7 days\n| extend Component = iif(client_Type == \"Browser\", \"Frontend\", \"Backend\") // Differentiate frontend and backend logs\n| summarize RequestCount = count() by Component\n| project Component, RequestCount\n",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "query - 21"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Availability of Key Vault"
+      },
+      "name": "text - 23"
+    },
+    {
+      "type": 10,
+      "content": {
+        "chartId": "workbookd9149c54-66e5-465f-a05a-029a98ec89b0",
+        "version": "MetricsItem/2.0",
+        "size": 0,
+        "chartType": 2,
+        "resourceType": "microsoft.keyvault/vaults",
+        "metricScope": 0,
+        "resourceIds": [
+          "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourceGroups/BCSAI2024-DEVOPS-STUDENTS-B-UAT/providers/Microsoft.KeyVault/vaults/money404-kv-uat"
+        ],
+        "timeContext": {
+          "durationMs": 3600000
+        },
+        "metrics": [
+          {
+            "namespace": "microsoft.keyvault/vaults",
+            "metric": "microsoft.keyvault/vaults--Availability",
+            "aggregation": 4
+          }
+        ],
+        "gridSettings": {
+          "rowLimit": 10000
+        }
+      },
+      "name": "metric - 24"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Availability of Data Base"
+      },
+      "name": "text - 25"
+    },
+    {
+      "type": 10,
+      "content": {
+        "chartId": "workbook64794194-a851-497f-800e-17c5b26ce4d2",
+        "version": "MetricsItem/2.0",
+        "size": 0,
+        "chartType": 2,
+        "resourceType": "microsoft.dbforpostgresql/flexibleservers",
+        "metricScope": 0,
+        "resourceIds": [
+          "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourceGroups/BCSAI2024-DEVOPS-STUDENTS-B-UAT/providers/Microsoft.DBforPostgreSQL/flexibleServers/money404-dbsrv-uat"
+        ],
+        "timeContext": {
+          "durationMs": 3600000
+        },
+        "metrics": [
+          {
+            "namespace": "microsoft.dbforpostgresql/flexibleservers",
+            "metric": "microsoft.dbforpostgresql/flexibleservers-Availability-is_db_alive",
+            "aggregation": 3,
+            "splitBy": null
+          }
+        ],
+        "gridSettings": {
+          "rowLimit": 10000
+        }
+      },
+      "name": "metric - 26"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourceGroups/BCSAI2024-DEVOPS-STUDENTS-B-DEV/providers/Microsoft.Insights/components/money404-appInsights-dev"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

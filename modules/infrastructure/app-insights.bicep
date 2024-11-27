@@ -20,6 +20,14 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+module workbook 'workbook.bicep' = {
+  name: 'workbook'
+  params: {
+    location: location
+    sourceId: appInsights.id
+  }
+}
+
 @description('Existing Key Vault resource')
 resource adminCredentialsKeyVault 'Microsoft.KeyVault/vaults@2021-10-01' existing = {
   name: last(split(keyVaultResourceId, '/'))
@@ -41,6 +49,7 @@ resource connectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' =
     value: appInsights.properties.ConnectionString
   }
 }
+
 
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
 output appInsightsConnectionString string = appInsights.properties.ConnectionString
