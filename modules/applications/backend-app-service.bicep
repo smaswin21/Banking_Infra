@@ -31,11 +31,8 @@ var appInsightsSettings = [
   { name: 'XDT_MicrosoftApplicationInsights_NodeJS', value: '1' }
 ]
 
-var identityPrincipalIdSetting = [
-  { name: 'DBUSER', value: appServiceAPIApp.identity.principalId }
-]
 
-var mergedAppSettings = concat(appSettings, dockerAppSettings, appInsightsSettings, identityPrincipalIdSetting)
+var mergedAppSettings = concat(appSettings, dockerAppSettings, appInsightsSettings)
 
 
 resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
@@ -55,6 +52,16 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
       appSettings: mergedAppSettings
     }
   }
+}
+
+resource appServiceAPIAppSettings 'Microsoft.Web/sites/config@2022-03-01' = {
+  name: '${appServiceAPIAppName}/appsettings'
+  properties: {
+    DBUSER: appServiceAPIApp.identity.principalId
+  }
+  dependsOn: [
+    appServiceAPIApp
+  ]
 }
 
 @description('Existing Key Vault resource')
