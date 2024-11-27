@@ -112,11 +112,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
       }
       {
         name: 'DBUSER'
-        value: appServiceAPIDBHostDBUSER
-      }
-      {
-        name: 'FLASK_APP'
-        value: appServiceAPIDBHostFLASK_APP
+        value: appServiceAPIAppName
       }
       {
         name: 'FLASK_DEBUG'
