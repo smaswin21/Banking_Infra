@@ -47,6 +47,8 @@ resource connectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' =
   parent: adminCredentialsKeyVault
   properties: {
     value: appInsights.properties.ConnectionString
+  }
+}
 
 
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
