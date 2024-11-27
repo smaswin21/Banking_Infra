@@ -1,6 +1,7 @@
 param location string = resourceGroup().location
 param appServicePlanName string
 param appServiceAppName string
+param staticappServiceAppName string
 param appServiceAPIAppName string
 param appServiceAPIEnvVarENV string
 param appServiceAPIEnvVarDBHOST string
@@ -161,6 +162,8 @@ module frontendApp './applications/frontend-app-service.bicep' = {
     appServicePlanId: appServicePlan.outputs.id
     appInsightsInstrumentationKey: appInsightsInstrumentationKey
     appInsightsConnectionString: appInsightsConnectionString
+    name: staticappServiceAppName  // Name for the static web app
+    sku: 'Standard'         // Set appropriate SKU for Static Web App
   }
 }
 

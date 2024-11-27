@@ -121,6 +121,8 @@ module appService 'modules/website.bicep' = {
     dockerRegistryImageTag: dockerRegistryImageTag
     containerRegistryName: containerRegistryName
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
+    //static web app
+    staticappServiceAppName: staticWebAppName
     // Pass Application Insights settings
     appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
