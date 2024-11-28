@@ -66,6 +66,8 @@ param keyVaultSecretNameAdminPassword1 string
 @minLength(3)
 @maxLength(24)
 param staticWebAppName string = 'ie-bank-swa-dev'
+@sys.description('The location where the Static Web App will be deployed')
+param locationswa string
 @sys.description('The SKU of the App Service Plan')
 param sku string
 
@@ -124,6 +126,7 @@ module appService 'modules/website.bicep' = {
     //static web app
     staticappServiceAppName: staticWebAppName
     sku: sku
+    locationswa: locationswa
     // Pass Application Insights settings
     appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString

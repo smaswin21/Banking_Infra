@@ -19,6 +19,9 @@ param appCommandLine string = 'pm2 serve /home/site/wwwroot --spa --no-daemon'
 @description('Name of the static web app')
 param name string
 
+@description('The location where the App Service will be deployed')
+param locationswa string
+
 @allowed([
   'Free'
   'Standard'
@@ -61,7 +64,7 @@ resource swa 'Microsoft.Web/staticSites@2024-04-01' = {
   //    {customized property}: {}
   //  }
   //}
-  location: location
+  location: locationswa
   name: name
   properties: {
     allowConfigFileUpdates: false

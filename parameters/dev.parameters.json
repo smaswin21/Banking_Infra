@@ -24,10 +24,13 @@
       "value": "money404-swa-dev"
     },
     "location": {
-      "value": "West Europe"
+      "value": "North Europe"
     },
     "sku": {
       "value": "Standard"
+    },
+    "locationswa" : {
+      "value": "West Europe"
     },
     "containerRegistryName": {
       "value": "money404acrdev"
