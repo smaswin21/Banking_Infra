@@ -2,6 +2,8 @@ param location string = resourceGroup().location
 param appServicePlanName string
 param appServiceAppName string
 param staticappServiceAppName string
+@description('The name of the Application Insights resource')
+param appInsightsName string
 param appServiceAPIAppName string
 param appServiceAPIEnvVarENV string
 param appServiceAPIEnvVarDBHOST string
@@ -19,8 +21,6 @@ param environmentType string
 param containerRegistryName string
 param dockerRegistryImageName string
 param dockerRegistryImageTag string
-param appInsightsInstrumentationKey string
-param appInsightsConnectionString string
 
 param keyVaultResourceId string
 
@@ -42,6 +42,16 @@ var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify a
 param sku string
 param locationswa string
 
+
+module appInsights './infrastructure/app-insights.bicep' = {
+  name: 'appInsights'
+  params: {
+    location: location
+    appInsightsName: appInsightsName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId // Pass log analytics reference to Application Insights
+    keyVaultResourceId: keyVaultResourceId
+  }
+}
 
 
 // BACKEND
@@ -84,7 +94,8 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     containerRegistryName: containerRegistryName
     dockerRegistryUserName: keyVaultReference.getSecret(keyVaultSecretNameAdminUsername)
     dockerRegistryPassword: keyVaultReference.getSecret(keyVaultSecretNameAdminPassword0)
-
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
+    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
 
@@ -107,11 +118,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
       }
       {
         name: 'DBUSER'
-        value: appServiceAPIDBHostDBUSER
-      }
-      {
-        name: 'FLASK_APP'
-        value: appServiceAPIDBHostFLASK_APP
+        value: appServiceAPIAppName
       }
       {
         name: 'FLASK_DEBUG'
@@ -121,14 +128,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
         name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
         value: 'true'
       }
-      {
-        name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-        value: appInsightsInstrumentationKey
-      }
-      {
-        name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-        value: appInsightsConnectionString
-      }
+
     ]
   }
   // dependencies are implicit
@@ -136,6 +136,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     containerRegistry
     appServicePlan
     keyVaultReference
+    appInsights
   ]
 }
 
@@ -162,8 +163,8 @@ module frontendApp './applications/frontend-app-service.bicep' = {
     appServiceAppName: appServiceAppName
     location: location
     appServicePlanId: appServicePlan.outputs.id
-    appInsightsInstrumentationKey: appInsightsInstrumentationKey
-    appInsightsConnectionString: appInsightsConnectionString
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
+    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
     name: staticappServiceAppName  // Name for the static web app
     sku: sku         // Set appropriate SKU for Static Web App
     locationswa: locationswa
