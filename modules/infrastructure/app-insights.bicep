@@ -80,6 +80,36 @@ resource loginSLOAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   }
 }
 
+// High API Error Rate Alert Rule
+@description('Alert rule for high API error rate')
+resource apiErrorRateAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+  name: 'API-Error-Rate-Alert'
+  location: 'global'
+  properties: {
+    description: 'Alert when API error rate exceeds 5% over 10 minutes'
+    severity: 3
+    enabled: true
+    scopes: [
+      appInsights.id
+    ]
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT10M'
+    criteria: {
+      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+      allOf: [
+        {
+          name: 'APIErrorRate'
+          criterionType: 'StaticThresholdCriterion'
+          metricName: 'requests/failed'
+          operator: 'GreaterThan'
+          threshold: 5
+          timeAggregation: 'Percentage'
+        }
+      ]
+    }
+  }
+}
+
 
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
 output appInsightsConnectionString string = appInsights.properties.ConnectionString
