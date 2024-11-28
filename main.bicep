@@ -133,7 +133,5 @@ module appService 'modules/website.bicep' = {
 output appServiceAppHostName string = appService.outputs.appServiceAppHostName
 output logAnalyticsWorkspaceId string = logAnalytics.outputs.logAnalyticsWorkspaceId
 output logAnalyticsWorkspaceName string = logAnalytics.outputs.logAnalyticsWorkspaceName
-output appInsightsInstrumentationKey string = appInsights.outputs.appInsightsInstrumentationKey
-output appInsightsConnectionString string = appInsights.outputs.appInsightsConnectionString
 output staticWebAppEndpoint string = appService.outputs.staticWebAppEndpoint
 output staticWebAppResourceName string = appService.outputs.staticWebAppResourceName
