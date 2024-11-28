@@ -80,35 +80,36 @@ resource loginSLOAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   }
 }
 
-// High API Error Rate Alert Rule
-@description('Alert rule for high API error rate')
-resource apiErrorRateAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
-  name: 'API-Error-Rate-Alert'
+// Page Load Time Alert Rule
+@description('Alert rule for page load time exceeding 2 seconds')
+resource pageLoadTimeAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+  name: 'Page-Load-Time-Alert'
   location: 'global'
   properties: {
-    description: 'Alert when API error rate exceeds 5% over 10 minutes'
-    severity: 3
+    description: 'Alert when page load time exceeds 5 seconds'
+    severity: 4
     enabled: true
     scopes: [
       appInsights.id
     ]
-    evaluationFrequency: 'PT5M'
-    windowSize: 'PT10M'
+    evaluationFrequency: 'PT1M'
+    windowSize: 'PT5M'
     criteria: {
       'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
       allOf: [
         {
-          name: 'APIErrorRate'
+          name: 'PageLoadTime'
           criterionType: 'StaticThresholdCriterion'
-          metricName: 'requests/failed'
+          metricName: 'browserTimings/totalDuration'
           operator: 'GreaterThan'
-          threshold: 5
-          timeAggregation: 'Percentage'
+          threshold: 5000
+          timeAggregation: 'Average'
         }
       ]
     }
   }
 }
+
 
 
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
