@@ -72,6 +72,12 @@
     },
     "keyVaultSecretNameAdminPassword1": {
       "value": "acr-password1"
+    },
+    "logicAppName": {
+      "value": "money404-logicapp-dev"
+    },
+    "slackWebhookUrl": {
+      "value": "https://hooks.slack.com/services/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"
     }
   }
 }
