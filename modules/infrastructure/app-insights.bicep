@@ -50,6 +50,34 @@ resource connectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' =
   }
 }
 
+@description('Alert rule for Unauthorized Access')
+resource unauthorizedAccessAlert 'Microsoft.Insights/metricAlerts@2021-08-01' = {
+  name: 'UnauthorizedAccessAlert'
+  location: location
+  properties: {
+    description: 'Triggers when multiple failed logins occur within 5 minutes'
+    severity: 1 // High
+    enabled: true
+    scopes: [
+      appInsights.id
+    ]
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT5M'
+    criteria: {
+      allOf: [
+        {
+          metricName: 'failedLoginCount'
+          metricNamespace: 'Microsoft.ApplicationInsights'
+          operator: 'GreaterThan'
+          threshold: 5
+          timeAggregation: 'Total'
+        }
+      ]
+    }
+    autoMitigate: false
+    actions: []
+  }
+}
 
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
 output appInsightsConnectionString string = appInsights.properties.ConnectionString
