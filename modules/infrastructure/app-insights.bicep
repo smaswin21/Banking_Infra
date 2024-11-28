@@ -80,7 +80,7 @@ resource loginSLOAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   }
 }
 
-// Page Load Time Alert Rule
+// Page Load Time Alert Rules
 @description('Alert rule for page load time exceeding 2 seconds')
 resource pageLoadTimeAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: 'Page-Load-Time-Alert'
@@ -109,37 +109,6 @@ resource pageLoadTimeAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     }
   }
 }
-
-// Key Vault Uptime Alert Rule
-@description('Alert rule for Key Vault uptime')
-resource keyVaultUptimeAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
-  name: 'Key-Vault-Uptime-Alert'
-  location: 'global'
-  properties: {
-    description: 'Alert when Key Vault uptime drops below 99.9%'
-    severity: 2
-    enabled: true
-    scopes: [
-      keyVaultResourceId
-    ]
-    evaluationFrequency: 'PT5M'
-    windowSize: 'PT15M'
-    criteria: {
-      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
-      allOf: [
-        {
-          name: 'KeyVaultUptime'
-          criterionType: 'StaticThresholdCriterion'
-          metricName: 'availabilityResults/availabilityPercentage'
-          operator: 'LessThan'
-          threshold: 90
-          timeAggregation: 'Average'
-        }
-      ]
-    }
-  }
-}
-
 
 
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
