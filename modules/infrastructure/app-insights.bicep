@@ -110,6 +110,36 @@ resource pageLoadTimeAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   }
 }
 
+// Key Vault Uptime Alert Rule
+@description('Alert rule for Key Vault uptime')
+resource keyVaultUptimeAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+  name: 'Key-Vault-Uptime-Alert'
+  location: 'global'
+  properties: {
+    description: 'Alert when Key Vault uptime drops below 99.9%'
+    severity: 2
+    enabled: true
+    scopes: [
+      keyVaultResourceId
+    ]
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT15M'
+    criteria: {
+      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+      allOf: [
+        {
+          name: 'KeyVaultUptime'
+          criterionType: 'StaticThresholdCriterion'
+          metricName: 'availabilityResults/availabilityPercentage'
+          operator: 'LessThan'
+          threshold: 90
+          timeAggregation: 'Average'
+        }
+      ]
+    }
+  }
+}
+
 
 
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
