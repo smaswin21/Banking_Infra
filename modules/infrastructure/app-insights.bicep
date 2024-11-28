@@ -50,34 +50,36 @@ resource connectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' =
   }
 }
 
-@description('Alert rule for Unauthorized Access')
-resource unauthorizedAccessAlert 'Microsoft.Insights/metricAlerts@2021-08-01' = {
-  name: 'UnauthorizedAccessAlert'
-  location: location
+// Unauthorized Access Alert Rule
+@description('Alert rule for login time')
+resource loginSLOAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+  name: 'Login-SLO-Alert'
+  location: 'global'
   properties: {
-    description: 'Triggers when multiple failed logins occur within 5 minutes'
-    severity: 1 // High
+    description: 'Alert when login response time exceeds 5 seconds'
+    severity: 2
     enabled: true
     scopes: [
       appInsights.id
     ]
-    evaluationFrequency: 'PT5M'
+    evaluationFrequency: 'PT1M'
     windowSize: 'PT5M'
     criteria: {
+      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
       allOf: [
         {
-          metricName: 'failedLoginCount'
-          metricNamespace: 'Microsoft.ApplicationInsights'
+          name: 'LoginResponseTime'
+          criterionType: 'StaticThresholdCriterion'
+          metricName: 'requests/duration'
           operator: 'GreaterThan'
-          threshold: 5
-          timeAggregation: 'Total'
+          threshold: 5000
+          timeAggregation: 'Average'
         }
       ]
     }
-    autoMitigate: false
-    actions: []
   }
 }
+
 
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
 output appInsightsConnectionString string = appInsights.properties.ConnectionString
