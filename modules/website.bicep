@@ -10,8 +10,8 @@ param appServiceAPIEnvVarDBHOST string
 param appServiceAPIEnvVarDBNAME string
 @secure()
 param appServiceAPIEnvVarDBPASS string
-// not used? param appServiceAPIDBHostDBUSER string
-// not used? param appServiceAPIDBHostFLASK_APP string
+appServiceAPIDBHostDBUSER string     // not used? param
+appServiceAPIDBHostFLASK_APP string  // not used? param
 param appServiceAPIDBHostFLASK_DEBUG string
 @allowed([
   'nonprod'
