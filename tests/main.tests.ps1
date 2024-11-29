@@ -1,3 +1,5 @@
+# test local: pwsh tests/main.tests.ps1
+
 Describe 'Bicep Parameter Tests' {
     It 'Should validate default parameters' {
         $parameters = @{
@@ -5,7 +7,7 @@ Describe 'Bicep Parameter Tests' {
             postgresSQLServerName = 'valid-db-server'
             appServicePlanName = 'valid-plan'
         }
-        $template = './main.bicep'
+        $template = './main.bicep'validation examples
         $result = az bicep build --file $template
         $result | Should -Not -BeNullOrEmpty
     }
