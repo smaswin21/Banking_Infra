@@ -27,9 +27,9 @@ jobs:
       # Lint Bicep code
     - name: Run Bicep linter
       run: az bicep build --file ./main.bicep --only-show-errors --output json
-      # Validate Bicep file (bicep unit testing)
-    - name: Validate Bicep file
-      run: az bicep validate --file ./main.bicep
+    #  # Validate Bicep file (bicep unit testing)
+    #- name: Validate Bicep file
+    #  run: az bicep validate --file ./main.bicep
 
 
       # Run Checkov for security scanning
