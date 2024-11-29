@@ -18,11 +18,12 @@ env:
   USER_ALIAS: money404
 
 jobs:
-  validate:
+  # resource https://learn.microsoft.com/en-us/training/modules/test-bicep-code-using-github-actions/5-exercise-add-lint-validate-jobs-workflow
+  validate_dev:     # Validate the Bicep file (bicep unit testing)
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: azure/login@v1
+    - uses: azure/login@v2
       with:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
     - uses: azure/arm-deploy@v1
@@ -33,7 +34,22 @@ jobs:
         parameters: environmentType=${{ env.ENVIRONMENT_TYPE }}
         deploymentMode: Validate
 
-  lint:
+  validate_uat:     # Validate the Bicep file (bicep unit testing)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: azure/login@v2
+      with:
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - uses: azure/arm-deploy@v1
+      name: Run preflight validation
+      with:
+        resourceGroupName: ${{ env.RESOURCE_GROUP_UAT }}
+        template: ./main.bicep
+        parameters: environmentType=${{ env.ENVIRONMENT_TYPE }}
+        deploymentMode: Validate
+
+  lint:         # Lint the Bicep file
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -61,20 +77,19 @@ jobs:
         name: bicep-build
         path: ./main.bicep
 
+
+
+
   deploy-dev:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    needs: [build, lint, validate]
+    needs: [build, lint, validate_dev]
     environment:
       name: 'Development'
 
     steps:
       # Checkout code
     - uses: actions/checkout@v3
-
-    #  # bicep unit testing
-    #- name: Run Bicep Unit Tests
-    #  run: pwsh tests/main.tests.ps1
 
       # Log into Azure
     - uses: azure/login@v2
@@ -103,7 +118,7 @@ jobs:
   deploy-uat:
     if: github.event.pull_request.base.ref == 'main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, lint, validate_uat]
     environment:
       name: 'UAT'
 
