@@ -35,10 +35,10 @@ param appServiceAPIEnvVarDBNAME string
 @sys.description('The value for the environment variable DBPASS')
 @secure()
 param appServiceAPIEnvVarDBPASS string
-@sys.description('The value for the environment variable DBUSER')       // nnot used? but passed to workflow?? wtf?
-param appServiceAPIDBHostDBUSER string                                  // nnot used?
-@sys.description('The value for the environment variable FLASK_APP')    // nnot used?
-param appServiceAPIDBHostFLASK_APP string                               // nnot used?
+@sys.description('The value for the environment variable DBUSER')
+param appServiceAPIDBHostDBUSER string
+@sys.description('The value for the environment variable FLASK_APP')
+param appServiceAPIDBHostFLASK_APP string
 @sys.description('The value for the environment variable FLASK_DEBUG')
 param appServiceAPIDBHostFLASK_DEBUG string
 @sys.description('The name of the Azure Container Registry')
@@ -100,8 +100,8 @@ module appService 'modules/website.bicep' = {
     appServiceAppName: appServiceAppName
     appServiceAPIAppName: appServiceAPIAppName
     appServicePlanName: appServicePlanName
-    // not used? appServiceAPIDBHostDBUSER: appServiceAPIDBHostDBUSER
-    // not used? appServiceAPIDBHostFLASK_APP: appServiceAPIDBHostFLASK_APP
+    appServiceAPIDBHostDBUSER: appServiceAPIDBHostDBUSER
+    appServiceAPIDBHostFLASK_APP: appServiceAPIDBHostFLASK_APP
     appServiceAPIDBHostFLASK_DEBUG: appServiceAPIDBHostFLASK_DEBUG
     appServiceAPIEnvVarDBHOST: appServiceAPIEnvVarDBHOST
     appServiceAPIEnvVarDBNAME: appServiceAPIEnvVarDBNAME

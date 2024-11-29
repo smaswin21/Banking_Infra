@@ -10,8 +10,8 @@ param appServiceAPIEnvVarDBHOST string
 param appServiceAPIEnvVarDBNAME string
 @secure()
 param appServiceAPIEnvVarDBPASS string
-appServiceAPIDBHostDBUSER string     // not used? param
-appServiceAPIDBHostFLASK_APP string  // not used? param
+param appServiceAPIDBHostDBUSER string
+param appServiceAPIDBHostFLASK_APP string
 param appServiceAPIDBHostFLASK_DEBUG string
 @allowed([
   'nonprod'
@@ -174,4 +174,3 @@ module frontendApp './applications/frontend-app-service.bicep' = {
 output appServiceAppHostName string = frontendApp.outputs.appServiceAppHostName
 output staticWebAppEndpoint string = frontendApp.outputs.staticWebAppEndpoint
 output staticWebAppResourceName string = frontendApp.outputs.staticWebAppResourceName
-
