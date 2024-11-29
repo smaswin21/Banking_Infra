@@ -29,9 +29,17 @@ jobs:
     - uses: azure/arm-deploy@v1
       name: Run preflight validation
       with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID_DEV }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_DEV }}
         template: ./main.bicep
-        parameters: environmentType=${{ env.ENVIRONMENT_TYPE }}
+        parameters: ./parameters/dev.parameters.json
+          appServiceAPIEnvVarENV=${{ vars.ENV }}
+          appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }}
+          appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }}
+          appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }}
+          appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
+          appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
+          appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
         deploymentMode: Validate
 
   validate_uat:     # Validate the Bicep file (bicep unit testing)
@@ -46,7 +54,14 @@ jobs:
       with:
         resourceGroupName: ${{ env.RESOURCE_GROUP_UAT }}
         template: ./main.bicep
-        parameters: environmentType=${{ env.ENVIRONMENT_TYPE }}
+        parameters: ./parameters/uat.parameters.json
+          appServiceAPIEnvVarENV=${{ vars.ENV }}
+          appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }}
+          appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }}
+          appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }}
+          appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
+          appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
+          appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
         deploymentMode: Validate
 
   lint:         # Lint the Bicep file
