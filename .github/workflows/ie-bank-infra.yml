@@ -27,6 +27,10 @@ jobs:
       # Lint Bicep code
     - name: Run Bicep linter
       run: az bicep build --file ./main.bicep --only-show-errors --output json
+      # Validate Bicep file (bicep unit testing)
+    - name: Validate Bicep file
+      run: az bicep validate --file ./main.bicep
+
 
       # Run Checkov for security scanning
     - name: Run Checkov
@@ -53,6 +57,18 @@ jobs:
     steps:
       # Checkout code
     - uses: actions/checkout@v3
+
+      # bicep unit testing
+    - name: Run Bicep Unit Tests
+      run: pwsh tests/main.tests.ps1
+
+      # Validate Deployment with What-If
+    - name: Validate Deployment with What-If
+      run: |
+        az deployment group what-if \
+          --resource-group ${{ env.RESOURCE_GROUP_DEV }} \
+          --template-file ./main.bicep \
+          --parameters ./parameters/dev.parameters.json
 
       # Log into Azure
     - uses: azure/login@v2
@@ -94,6 +110,17 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: bicep-build
+
+      # Run Bicep Unit Tests
+    - name: Run Bicep Unit Tests
+      run: pwsh tests/main.tests.ps1
+      # Validate Deployment with What-If
+    - name: Validate Deployment with What-If
+      run: |
+        az deployment group what-if \
+          --resource-group ${{ env.RESOURCE_GROUP_UAT }} \
+          --template-file ./main.bicep \
+          --parameters ./parameters/dev.parameters.json
 
       # Log into Azure
     - uses: azure/login@v2
