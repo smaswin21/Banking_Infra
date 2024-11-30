@@ -1,0 +1,77 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "environmentType": {
+        "value": "prod"
+      },
+      "postgresSQLServerName": {
+        "value": "money404-dbsrv-prod"
+      },
+      "postgresSQLDatabaseName": {
+        "value": "money404-db-prod"
+      },
+      "appServicePlanName": {
+        "value": "money404-asp-prod"
+      },
+      "appServiceAPIAppName": {
+        "value": "money404-be-prod"
+      },
+      "appServiceAppName": {
+        "value": "money404-fe-prod"
+      },
+      "staticWebAppName": {
+        "value": "money404-swa-prod"
+      },
+      "location": {
+        "value": "North Europe"
+      },
+      "sku": {
+        "value": "Standard"
+      },
+      "locationswa" : {
+        "value": "West Europe"
+      },
+      "containerRegistryName": {
+        "value": "money404acrprod"
+      },
+      "dockerRegistryImageName": {
+        "value": "money404-be-prod"
+      },
+      "dockerRegistryImageTag": {
+        "value": "latest"
+      },
+      "logAnalyticsWorkspaceName": {
+        "value": "money404-law-prod"
+      },
+      "appInsightsName": {
+        "value": "money404-appInsights-prod"
+      },
+      "keyVaultName": {
+        "value": "money404-kv-prod"
+      },
+      "keyVaultRoleAssignments": {
+        "value": [
+          {
+              "principalId": "daa3436a-d1fb-44fe-b34b-053db433cdb7",
+              "roleDefinitionIdOrName": "Key Vault Administrator",
+              "principalType": "Group"
+          },
+          {
+              "principalId": "37841ca3-42b3-4aed-b215-44d6f5dcb57d",
+              "roleDefinitionIdOrName": "Key Vault Secrets User",
+              "principalType": "ServicePrincipal"
+          }
+        ]
+      },
+      "keyVaultSecretNameAdminUsername": {
+        "value": "acr-username"
+      },
+      "keyVaultSecretNameAdminPassword0": {
+        "value": "acr-password0"
+      },
+      "keyVaultSecretNameAdminPassword1": {
+        "value": "acr-password1"
+      }
+    }
+  }

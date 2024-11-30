@@ -14,7 +14,8 @@ on:
 env:
   RESOURCE_GROUP_DEV: BCSAI2024-DEVOPS-STUDENTS-B-DEV
   RESOURCE_GROUP_UAT: BCSAI2024-DEVOPS-STUDENTS-B-UAT
-  SUBSCRIPTION_ID_DEV: e0b9cada-61bc-4b5a-bd7a-52c606726b3b
+  RESOURCE_GROUP_PROD: BCSAI2024-DEVOPS-STUDENTS-B-PROD
+  SUBSCRIPTION_ID: e0b9cada-61bc-4b5a-bd7a-52c606726b3b
   USER_ALIAS: money404
 
 jobs:
@@ -29,7 +30,7 @@ jobs:
     - uses: azure/arm-deploy@v1
       name: Run preflight validation
       with:
-        subscriptionId: ${{ env.SUBSCRIPTION_ID_DEV }}
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_DEV }}
         template: ./main.bicep
         parameters: ./parameters/dev.parameters.json
@@ -52,6 +53,7 @@ jobs:
     - uses: azure/arm-deploy@v1
       name: Run preflight validation
       with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_UAT }}
         template: ./main.bicep
         parameters: ./parameters/uat.parameters.json
@@ -115,7 +117,7 @@ jobs:
     - name: Deploy Infrastructure (Dev)
       uses: azure/arm-deploy@v1
       with:
-        subscriptionId: ${{ env.SUBSCRIPTION_ID_DEV }}
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_DEV }}
         template: ./main.bicep
         parameters: ./parameters/dev.parameters.json
@@ -167,7 +169,7 @@ jobs:
     - name: Deploy Infrastructure (UAT)
       uses: azure/arm-deploy@v1
       with:
-        subscriptionId: ${{ env.SUBSCRIPTION_ID_DEV }}
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_UAT }}
         template: ./main.bicep
         parameters: ./parameters/uat.parameters.json
