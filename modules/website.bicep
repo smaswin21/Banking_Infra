@@ -1,6 +1,7 @@
 param location string = resourceGroup().location
 param appServicePlanName string
 param appServiceAppName string
+param staticappServiceAppName string
 @description('The name of the Application Insights resource')
 param appInsightsName string
 param appServiceAPIAppName string
@@ -38,6 +39,10 @@ param logAnalyticsWorkspaceId string
 
 var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
 
+param sku string
+param locationswa string
+
+
 module appInsights './infrastructure/app-insights.bicep' = {
   name: 'appInsights'
   params: {
@@ -47,6 +52,7 @@ module appInsights './infrastructure/app-insights.bicep' = {
     keyVaultResourceId: keyVaultResourceId
   }
 }
+
 
 // BACKEND
 module containerRegistry './infrastructure/container-registry.bicep' = {
@@ -159,7 +165,12 @@ module frontendApp './applications/frontend-app-service.bicep' = {
     appServicePlanId: appServicePlan.outputs.id
     appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
+    name: staticappServiceAppName  // Name for the static web app
+    sku: sku         // Set appropriate SKU for Static Web App
+    locationswa: locationswa
   }
 }
 
 output appServiceAppHostName string = frontendApp.outputs.appServiceAppHostName
+output staticWebAppEndpoint string = frontendApp.outputs.staticWebAppEndpoint
+output staticWebAppResourceName string = frontendApp.outputs.staticWebAppResourceName

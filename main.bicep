@@ -60,9 +60,17 @@ param keyVaultRoleAssignments array = []
 param keyVaultSecretNameAdminUsername string
 @description('Name of the secret to store the admin password 0')
 param keyVaultSecretNameAdminPassword0 string
-
 @description('Name of the secret to store the admin password 1')
 param keyVaultSecretNameAdminPassword1 string
+@sys.description('The name of the Static Web App')
+@minLength(3)
+@maxLength(24)
+param staticWebAppName string = 'ie-bank-swa-dev'
+@sys.description('The location where the Static Web App will be deployed')
+param locationswa string
+@sys.description('The SKU of the App Service Plan')
+param sku string
+
 
 module keyVault 'modules/infrastructure/keyvault.bicep' = {
   name: 'keyVault'
@@ -103,6 +111,10 @@ module appService 'modules/website.bicep' = {
     dockerRegistryImageTag: dockerRegistryImageTag
     containerRegistryName: containerRegistryName
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
+    //static web app
+    staticappServiceAppName: staticWebAppName
+    sku: sku
+    locationswa: locationswa
     // Pass Application Insights settings
     appInsightsName: appInsightsName
 //    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
@@ -117,6 +129,9 @@ module appService 'modules/website.bicep' = {
   }
 }
 
+
 output appServiceAppHostName string = appService.outputs.appServiceAppHostName
 output logAnalyticsWorkspaceId string = logAnalytics.outputs.logAnalyticsWorkspaceId
 output logAnalyticsWorkspaceName string = logAnalytics.outputs.logAnalyticsWorkspaceName
+output staticWebAppEndpoint string = appService.outputs.staticWebAppEndpoint
+output staticWebAppResourceName string = appService.outputs.staticWebAppResourceName

@@ -20,8 +20,17 @@
     "appServiceAppName": {
       "value": "money404-fe-dev"
     },
+    "staticWebAppName": {
+      "value": "money404-swa-dev"
+    },
     "location": {
       "value": "North Europe"
+    },
+    "sku": {
+      "value": "Standard"
+    },
+    "locationswa" : {
+      "value": "West Europe"
     },
     "containerRegistryName": {
       "value": "money404acrdev"
