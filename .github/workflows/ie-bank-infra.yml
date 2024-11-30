@@ -79,7 +79,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_PROD }}
         template: ./main.bicep
-        parameters: ./parameters/uat.parameters.json
+        parameters: ./parameters/prod.parameters.json
           appServiceAPIEnvVarENV=${{ vars.ENV }}
           appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }}
           appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }}
