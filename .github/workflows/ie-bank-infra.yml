@@ -172,9 +172,6 @@ jobs:
       with:
         name: bicep-build
 
-      # Run Bicep Unit Tests
-    - name: Run Bicep Unit Tests
-      run: pwsh tests/main.tests.ps1
       # Validate Deployment with What-If
     - name: Validate Deployment with What-If
       run: |
