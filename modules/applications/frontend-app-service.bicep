@@ -1,27 +1,34 @@
+// Define App Service application name
 @description('The name of the App Service application')
 param appServiceAppName string
 
+// Define deployment location
 @description('The location where the App Service will be deployed')
 param location string
 
+// Define App Service Plan ID
 @description('The ID of the App Service Plan this App Service will use')
 param appServicePlanId string
 
+// Define Application Insights parameters
 @description('Application Insights Instrumentation Key for monitoring')
 param appInsightsInstrumentationKey string
 
 @description('Application Insights Connection String for monitoring')
 param appInsightsConnectionString string
 
+// Define command line to run for App Service
 @description('The command line to run for the App Service')
 param appCommandLine string = 'pm2 serve /home/site/wwwroot --spa --no-daemon'
 
+// Define static web app parameters
 @description('Name of the static web app')
 param name string
 
-@description('The location where the App Service will be deployed')
+@description('The location where the Static Web App will be deployed')
 param locationswa string
 
+// Define service tier
 @allowed([
   'Free'
   'Standard'

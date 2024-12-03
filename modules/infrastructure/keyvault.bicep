@@ -1,12 +1,32 @@
+// Define deployment location parameter
+@description('Deployment location for the resource group')
 param location string = resourceGroup().location
+
+// Define Key Vault name
+@description('The name of the Key Vault, generated using a unique string based on the resource group ID')
 param keyVaultName string = 'mykv${uniqueString(resourceGroup().id)}'
+
+// Define parameter to enable Key Vault for deployment
+@description('Flag to enable the Key Vault for deployment usage')
 param enableVaultForDeployment bool = true
+
+// Define role assignments array
+@description('Array of role assignments for the Key Vault')
 param roleAssignments array = []
-param diagnosticSettingName string ='myDiagnosticSetting'
+
+// Define diagnostic setting name
+@description('Name of the diagnostic setting for the resources')
+param diagnosticSettingName string = 'myDiagnosticSetting'
+
+// Define Log Analytics Workspace ID
+@description('The ID of the Log Analytics Workspace for monitoring')
 param logAnalyticsWorkspaceId string
-@description('The resource ID of the key vault.')
+
+// Define Key Vault outputs
+@description('The resource ID of the Key Vault')
 output resourceId string = keyVault.id
-@description('The URI of the key vault.')
+
+@description('The URI of the Key Vault')
 output keyVaultUri string = keyVault.properties.vaultUri
 
 var builtInRoleNames = {
