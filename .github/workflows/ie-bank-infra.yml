@@ -14,20 +14,93 @@ on:
 env:
   RESOURCE_GROUP_DEV: BCSAI2024-DEVOPS-STUDENTS-B-DEV
   RESOURCE_GROUP_UAT: BCSAI2024-DEVOPS-STUDENTS-B-UAT
-  SUBSCRIPTION_ID_DEV: e0b9cada-61bc-4b5a-bd7a-52c606726b3b
+  RESOURCE_GROUP_PROD: BCSAI2024-DEVOPS-STUDENTS-B-PROD
+  SUBSCRIPTION_ID: e0b9cada-61bc-4b5a-bd7a-52c606726b3b
   USER_ALIAS: money404
 
 jobs:
+  # resource https://learn.microsoft.com/en-us/training/modules/test-bicep-code-using-github-actions/5-exercise-add-lint-validate-jobs-workflow
+  validate_dev:     # Validate the Bicep file (bicep unit testing)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - uses: azure/arm-deploy@v1
+      name: Run preflight validation
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_DEV }}
+        template: ./main.bicep
+        parameters: ./parameters/dev.parameters.json
+          appServiceAPIEnvVarENV=${{ vars.ENV }}
+          appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }}
+          appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }}
+          appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }}
+          appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
+          appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
+          appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
+        deploymentMode: Validate
+
+  validate_uat:     # Validate the Bicep file (bicep unit testing)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - uses: azure/arm-deploy@v1
+      name: Run preflight validation
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_UAT }}
+        template: ./main.bicep
+        parameters: ./parameters/uat.parameters.json
+          appServiceAPIEnvVarENV=${{ vars.ENV }}
+          appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }}
+          appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }}
+          appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }}
+          appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
+          appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
+          appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
+        deploymentMode: Validate
+
+  validate_prod:     # Validate the Bicep file (bicep unit testing)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - uses: azure/arm-deploy@v1
+      name: Run preflight validation
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_PROD }}
+        template: ./main.bicep
+        parameters: ./parameters/prod.parameters.json
+          appServiceAPIEnvVarENV=${{ vars.ENV }}
+          appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }}
+          appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }}
+          appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }}
+          appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
+          appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
+          appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
+        deploymentMode: Validate
+
+  lint:         # Lint the Bicep file
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run Bicep linter
+      run: az bicep build --file ./main.bicep --only-show-errors --output json
+
   build:
     runs-on: ubuntu-latest
     steps:
       # Checkout code
     - uses: actions/checkout@v3
-
-      # Lint Bicep code
-    - name: Run Bicep linter
-      run: az bicep build --file ./main.bicep --only-show-errors --output json
-
       # Run Checkov for security scanning
     - name: Run Checkov
       uses: bridgecrewio/checkov-action@master
@@ -43,10 +116,13 @@ jobs:
         name: bicep-build
         path: ./main.bicep
 
+
+
+
   deploy-dev:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: github.ref != 'refs/heads/main' && github.event_name == 'push'  || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, lint, validate_dev]
     environment:
       name: 'Development'
 
@@ -63,7 +139,7 @@ jobs:
     - name: Deploy Infrastructure (Dev)
       uses: azure/arm-deploy@v1
       with:
-        subscriptionId: ${{ env.SUBSCRIPTION_ID_DEV }}
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_DEV }}
         template: ./main.bicep
         parameters: ./parameters/dev.parameters.json
@@ -79,9 +155,9 @@ jobs:
 
 
   deploy-uat:
-    if: github.event.pull_request.base.ref == 'main' || github.event_name == 'workflow_dispatch'
+    if: github.event.pull_request.base.ref == 'main' || github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, lint, validate_uat]
     environment:
       name: 'UAT'
 
@@ -104,7 +180,7 @@ jobs:
     - name: Deploy Infrastructure (UAT)
       uses: azure/arm-deploy@v1
       with:
-        subscriptionId: ${{ env.SUBSCRIPTION_ID_DEV }}
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_UAT }}
         template: ./main.bicep
         parameters: ./parameters/uat.parameters.json
@@ -118,3 +194,36 @@ jobs:
         deploymentName: ${{ env.USER_ALIAS }}
         failOnStdErr: false
 
+  deploy-prod:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    needs: [build, lint, validate_prod, deploy-uat]
+    environment:
+      name: 'Production'
+
+    steps:
+      # Checkout code
+    - uses: actions/checkout@v3
+
+      # Log into Azure
+    - uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Deploy Bicep file with Static Web App and other resources
+    - name: Deploy Infrastructure (Prod)
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_PROD }}
+        template: ./main.bicep
+        parameters: ./parameters/prod.parameters.json
+          appServiceAPIEnvVarENV=${{ vars.ENV }}
+          appServiceAPIEnvVarDBHOST=${{ vars.DBHOST }}
+          appServiceAPIEnvVarDBNAME=${{ vars.DBNAME }}
+          appServiceAPIEnvVarDBPASS=${{ secrets.DBPASS }}
+          appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
+          appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
+          appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
+        deploymentName: ${{ env.USER_ALIAS }}
+        failOnStdErr: false
