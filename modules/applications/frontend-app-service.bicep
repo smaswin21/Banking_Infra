@@ -37,31 +37,6 @@ param locationswa string
 param sku string
 
 
-resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
-  name: appServiceAppName
-  location: location
-  properties: {
-    serverFarmId: appServicePlanId
-    httpsOnly: true
-    siteConfig: {
-      linuxFxVersion: 'NODE|18-lts'
-      alwaysOn: false
-      ftpsState: 'FtpsOnly'
-      appCommandLine: appCommandLine
-      appSettings: [
-        {
-          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: appInsightsInstrumentationKey
-        }
-        {
-          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: appInsightsConnectionString
-        }
-      ]
-    }
-  }
-}
-
 
 // https://learn.microsoft.com/en-us/azure/templates/microsoft.web/staticsites?pivots=deployment-language-bicep
 resource swa 'Microsoft.Web/staticSites@2024-04-01' = {
@@ -124,7 +99,6 @@ resource swa 'Microsoft.Web/staticSites@2024-04-01' = {
   //}
 }
 
-output appServiceAppHostName string = appServiceApp.properties.defaultHostName
 output staticWebAppUrl string = swa.properties.defaultHostname
 output staticWebAppEndpoint string = swa.properties.defaultHostname
 output staticWebAppResourceName string = swa.name

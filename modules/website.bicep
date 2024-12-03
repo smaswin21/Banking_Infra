@@ -223,6 +223,6 @@ module frontendApp './applications/frontend-app-service.bicep' = {
   }
 }
 
-output appServiceAppHostName string = frontendApp.outputs.appServiceAppHostName
+output appServiceAppHostName string = frontendApp.outputs.staticWebAppUrl
 output staticWebAppEndpoint string = frontendApp.outputs.staticWebAppEndpoint
 output staticWebAppResourceName string = frontendApp.outputs.staticWebAppResourceName
