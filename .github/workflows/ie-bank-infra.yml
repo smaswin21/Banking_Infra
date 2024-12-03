@@ -101,7 +101,6 @@ jobs:
     steps:
       # Checkout code
     - uses: actions/checkout@v3
-
       # Run Checkov for security scanning
     - name: Run Checkov
       uses: bridgecrewio/checkov-action@master
