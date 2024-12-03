@@ -1,5 +1,10 @@
-param name string
+// Define deployment location parameter
+@description('Deployment location for the resource group')
 param location string = resourceGroup().location
+
+// Define resource name parameter
+@description('The name of the resource to be created')
+param name string
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
   name: name
