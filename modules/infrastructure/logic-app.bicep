@@ -6,7 +6,7 @@ param logicAppName string
 
 @description('Slack Webhook URL to send alerts')
 @secure()
-param slackWebhookUrl string = 'https://hooks.slack.com/services/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'
+param slackWebhookUrl string
 
 resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: logicAppName
