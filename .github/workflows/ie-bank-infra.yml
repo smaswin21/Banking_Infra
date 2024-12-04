@@ -41,6 +41,7 @@ jobs:
           appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
           appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
           appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
+          slackWebhookUrl=${{ vars.slackWebhookUrl }}
         deploymentMode: Validate
 
   validate_uat:     # Validate the Bicep file (bicep unit testing)
@@ -64,6 +65,7 @@ jobs:
           appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
           appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
           appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
+          slackWebhookUrl=${{ vars.slackWebhookUrl }}
         deploymentMode: Validate
 
   validate_prod:     # Validate the Bicep file (bicep unit testing)
@@ -87,6 +89,7 @@ jobs:
           appServiceAPIDBHostDBUSER=${{ secrets.DBUSER }}
           appServiceAPIDBHostFLASK_APP=${{ vars.FLASK_APP }}
           appServiceAPIDBHostFLASK_DEBUG=${{ vars.FLASK_DEBUG }}
+          slackWebhookUrl=${{ vars.slackWebhookUrl }}
         deploymentMode: Validate
 
   lint:         # Lint the Bicep file
