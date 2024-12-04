@@ -1,55 +1,108 @@
+// Define location parameter for resource group location
+@description('The location where all resources will be deployed')
 param location string = resourceGroup().location
+
+// Define application and service-related parameters
+@description('The name of the App Service Plan for hosting the application')
 param appServicePlanName string
+
+@description('The name of the App Service application')
 param appServiceAppName string
+
+@description('The name of the Static App Service application')
 param staticappServiceAppName string
-@description('The name of the Application Insights resource')
+
+@description('The name of the Application Insights resource for monitoring and diagnostics')
 param appInsightsName string
+
+@description('The name of the App Service API application')
 param appServiceAPIAppName string
+
+// Define environment variable parameters for App Service API
+@description('Environment variable for the application environment (e.g., staging, production)')
 param appServiceAPIEnvVarENV string
+
+@description('Database host for the API environment variable')
 param appServiceAPIEnvVarDBHOST string
+
+@description('Database name for the API environment variable')
 param appServiceAPIEnvVarDBNAME string
+
+@description('Database password for the API environment variable')
 @secure()
 param appServiceAPIEnvVarDBPASS string
+
+@description('Database user for the API environment variable')
 param appServiceAPIDBHostDBUSER string
+
+@description('Flask application name for the API environment variable')
 param appServiceAPIDBHostFLASK_APP string
+
+@description('Flask debug mode for the API environment variable (e.g., 0 for off, 1 for on)')
 param appServiceAPIDBHostFLASK_DEBUG string
+
+// Define environment type
+@description('The environment type (nonprod or prod)')
 @allowed([
   'nonprod'
   'prod'
 ])
 param environmentType string
+
+// Define container registry parameters
+@description('The name of the container registry')
 param containerRegistryName string
+
+@description('The name of the Docker registry image')
 param dockerRegistryImageName string
+
+@description('The tag of the Docker registry image')
 param dockerRegistryImageTag string
 
+// Define Key Vault-related parameters
+@description('Resource ID of the Key Vault')
 param keyVaultResourceId string
 
-@description('Name of the secret to store the admin username')
+@description('Name of the secret in Key Vault to store the admin username')
 param keyVaultSecretNameAdminUsername string
 
-@description('Name of the secret to store the admin password 0')
+@description('Name of the secret in Key Vault to store the admin password 0')
 param keyVaultSecretNameAdminPassword0 string
 
-@description('Name of the secret to store the admin password 1')
+@description('Name of the secret in Key Vault to store the admin password 1')
 param keyVaultSecretNameAdminPassword1 string
 
+// Define PostgreSQL parameters
+@description('The name of the PostgreSQL server')
 param postgresSQLServerName string
+
+@description('The name of the PostgreSQL database')
 param postgresSQLDatabaseName string
+
+// Define Log Analytics Workspace parameter
+@description('The ID of the Log Analytics Workspace for monitoring')
 param logAnalyticsWorkspaceId string
 
-var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
 
+// Define App Service Plan SKU
+@description('SKU for the App Service Plan based on environment type (e.g., B1 for basic plan)')
+var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' // Modify according to desired capacity
+
+// Define SKU and location parameters
+@description('SKU for the resource')
 param sku string
+
+@description('Location for the Static Web App')
 param locationswa string
 
 
 module appInsights './infrastructure/app-insights.bicep' = {
   name: 'appInsights'
   params: {
-    location: location
     appInsightsName: appInsightsName
-    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId // Pass log analytics reference to Application Insights
     keyVaultResourceId: keyVaultResourceId
+    location: location
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId // Pass log analytics reference to Application Insights
   }
 }
 
@@ -58,13 +111,13 @@ module appInsights './infrastructure/app-insights.bicep' = {
 module containerRegistry './infrastructure/container-registry.bicep' = {
   name: 'containerRegistry'
   params: {
-    location: location
-    registryName: containerRegistryName
     keyVaultResourceId: keyVaultResourceId
-    keyVaultSecretNameAdminUsername: keyVaultSecretNameAdminUsername
     keyVaultSecretNameAdminPassword0: keyVaultSecretNameAdminPassword0
     keyVaultSecretNameAdminPassword1: keyVaultSecretNameAdminPassword1
+    keyVaultSecretNameAdminUsername: keyVaultSecretNameAdminUsername
+    location: location
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
+    registryName: containerRegistryName
   }
 }
 
@@ -72,8 +125,8 @@ module containerRegistry './infrastructure/container-registry.bicep' = {
 module appServicePlan './applications/app-service-plan.bicep' = {
   name: 'appServicePlan'
   params: {
-    location: location
     appServicePlanName: appServicePlanName
+    location: location
     skuName: appServicePlanSkuName
   }
 }
@@ -89,15 +142,16 @@ module appServiceBE './applications/backend-app-service.bicep' = {
   name: 'backend'
   params: {
     location: location
+    environmentType: environmentType
+    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
     appServiceAPIAppName: appServiceAPIAppName
     appServicePlanId: appServicePlan.outputs.id
     containerRegistryName: containerRegistryName
-    dockerRegistryUserName: keyVaultReference.getSecret(keyVaultSecretNameAdminUsername)
-    dockerRegistryPassword: keyVaultReference.getSecret(keyVaultSecretNameAdminPassword0)
-    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
-    appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
     dockerRegistryImageName: dockerRegistryImageName
     dockerRegistryImageTag: dockerRegistryImageTag
+    dockerRegistryPassword: keyVaultReference.getSecret(keyVaultSecretNameAdminPassword0)
+    dockerRegistryUserName: keyVaultReference.getSecret(keyVaultSecretNameAdminUsername)
 
     appSettings: [
       {
@@ -133,10 +187,10 @@ module appServiceBE './applications/backend-app-service.bicep' = {
   }
   // dependencies are implicit
   dependsOn: [
-    containerRegistry
-    appServicePlan
-    keyVaultReference
     appInsights
+    appServicePlan
+    containerRegistry
+    keyVaultReference
   ]
 }
 
@@ -144,13 +198,13 @@ module appServiceBE './applications/backend-app-service.bicep' = {
 module applicationDatabase './database.bicep' = {
   name: 'applicationDatabase'
   params: {
-    location: location
     environmentType: environmentType
-    postgresSQLServerName: postgresSQLServerName
-    postgresSQLDatabaseName: postgresSQLDatabaseName
-    postgreSQLAdminServicePrincipalObjectId: appServiceBE.outputs.systemAssignedIdentityPrincipalId
-    postgreSQLAdminServicePrincipalName: appServiceAPIAppName
+    location: location
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
+    postgreSQLAdminServicePrincipalName: appServiceAPIAppName
+    postgreSQLAdminServicePrincipalObjectId: appServiceBE.outputs.systemAssignedIdentityPrincipalId
+    postgresSQLDatabaseName: postgresSQLDatabaseName
+    postgresSQLServerName: postgresSQLServerName
   }
 }
 
@@ -160,17 +214,17 @@ module applicationDatabase './database.bicep' = {
 module frontendApp './applications/frontend-app-service.bicep' = {
   name: 'frontendAppService'
   params: {
-    appServiceAppName: appServiceAppName
-    location: location
-    appServicePlanId: appServicePlan.outputs.id
-    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
+    appServiceAppName: appServiceAppName
+    appServicePlanId: appServicePlan.outputs.id
+    location: location
+    locationswa: locationswa
     name: staticappServiceAppName  // Name for the static web app
     sku: sku         // Set appropriate SKU for Static Web App
-    locationswa: locationswa
   }
 }
 
-output appServiceAppHostName string = frontendApp.outputs.appServiceAppHostName
+output appServiceAppHostName string = frontendApp.outputs.staticWebAppUrl
 output staticWebAppEndpoint string = frontendApp.outputs.staticWebAppEndpoint
 output staticWebAppResourceName string = frontendApp.outputs.staticWebAppResourceName

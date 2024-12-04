@@ -1,8 +1,25 @@
+// Define deployment location parameter
+@description('Deployment location for the resource group')
 param location string = resourceGroup().location
+
+// Define environment type
+@description('Environment type for deployment (e.g., nonprod, prod)')
 param environmentType string = 'nonprod'
+
+// Define PostgreSQL server name
+@description('The name of the PostgreSQL server')
 param postgresSQLServerName string = 'ie-bank-db-server-dev'
+
+// Define PostgreSQL Admin Service Principal Object ID
+@description('The object ID of the service principal for PostgreSQL admin access')
 param postgreSQLAdminServicePrincipalObjectId string
+
+// Define PostgreSQL Admin Service Principal Name
+@description('The name of the service principal for PostgreSQL admin access')
 param postgreSQLAdminServicePrincipalName string
+
+// Define Log Analytics Workspace ID
+@description('The ID of the Log Analytics Workspace for monitoring')
 param logAnalyticsWorkspaceId string
 
 // based on prod non prod change the sku
