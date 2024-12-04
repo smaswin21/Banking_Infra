@@ -1,5 +1,9 @@
-param postgresSQLDatabaseName string = 'ie-bank-db'
+// Define PostgreSQL server and database parameters
+@description('The name of the PostgreSQL server')
 param postgresSQLServerName string
+
+@description('The name of the PostgreSQL database, defaulting to ie-bank-db')
+param postgresSQLDatabaseName string = 'ie-bank-db'
 
 resource existingPostgresSQLServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
   name: postgresSQLServerName
