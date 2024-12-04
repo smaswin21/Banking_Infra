@@ -90,6 +90,7 @@ module appServiceBE './applications/backend-app-service.bicep' = {
   name: 'backend'
   params: {
     location: location
+    environmentType: environmentType
     appServiceAPIAppName: appServiceAPIAppName
     appServicePlanId: appServicePlan.outputs.id
     containerRegistryName: containerRegistryName
