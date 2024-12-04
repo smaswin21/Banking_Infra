@@ -152,7 +152,6 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     dockerRegistryImageTag: dockerRegistryImageTag
     dockerRegistryPassword: keyVaultReference.getSecret(keyVaultSecretNameAdminPassword0)
     dockerRegistryUserName: keyVaultReference.getSecret(keyVaultSecretNameAdminUsername)
-    location: location
 
     appSettings: [
       {
