@@ -37,7 +37,8 @@ param postgresSQLServerName string
 param postgresSQLDatabaseName string
 param logAnalyticsWorkspaceId string
 
-var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' //modify according to desired capacity
+@description('SKU for the App Service Plan based on environment type (e.g., B1 for basic plan)')
+var appServicePlanSkuName = (environmentType == 'prod') ? 'F1' : 'B1' // Modify according to desired capacity
 
 param sku string
 param locationswa string
