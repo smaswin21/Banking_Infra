@@ -75,9 +75,6 @@
     },
     "logicAppName": {
       "value": "money404-logicapp-dev"
-    },
-    "slackWebhookUrl": {
-      "value": "https://hooks.slack.com/services/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"
     }
   }
 }
