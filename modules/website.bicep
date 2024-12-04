@@ -83,6 +83,7 @@ param postgresSQLDatabaseName string
 @description('The ID of the Log Analytics Workspace for monitoring')
 param logAnalyticsWorkspaceId string
 
+
 // Define App Service Plan SKU
 @description('SKU for the App Service Plan based on environment type (e.g., B1 for basic plan)')
 var appServicePlanSkuName = (environmentType == 'prod') ? 'B1' : 'B1' // Modify according to desired capacity
@@ -140,6 +141,8 @@ resource keyVaultReference 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 module appServiceBE './applications/backend-app-service.bicep' = {
   name: 'backend'
   params: {
+    location: location
+    environmentType: environmentType
     appInsightsConnectionString: appInsights.outputs.appInsightsConnectionString
     appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey // implicit dependency
     appServiceAPIAppName: appServiceAPIAppName
@@ -149,7 +152,6 @@ module appServiceBE './applications/backend-app-service.bicep' = {
     dockerRegistryImageTag: dockerRegistryImageTag
     dockerRegistryPassword: keyVaultReference.getSecret(keyVaultSecretNameAdminPassword0)
     dockerRegistryUserName: keyVaultReference.getSecret(keyVaultSecretNameAdminUsername)
-    location: location
 
     appSettings: [
       {

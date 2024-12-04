@@ -2,6 +2,14 @@
 @description('Deployment location for the resource group')
 param location string = resourceGroup().location
 
+// Define environment type
+@description('The environment type (nonprod or prod)')
+@allowed([
+  'nonprod'
+  'prod'
+])
+param environmentType string
+
 // Define App Service API application name
 @description('The name of the App Service API application')
 param appServiceAPIAppName string
@@ -42,6 +50,7 @@ param appInsightsInstrumentationKey string
 @description('Application Insights Connection String for monitoring')
 param appInsightsConnectionString string
 
+
 var dockerAppSettings = [
   { name: 'DOCKER_REGISTRY_SERVER_URL', value: 'https://${containerRegistryName}.azurecr.io' }
   { name: 'DOCKER_REGISTRY_SERVER_USERNAME', value: dockerRegistryUserName }
@@ -69,7 +78,7 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
     httpsOnly: true
     siteConfig: {
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${dockerRegistryImageName}:${dockerRegistryImageTag}'
-      alwaysOn: true
+      alwaysOn: environmentType == 'prod' ? true : false
       ftpsState: 'FtpsOnly'
       appCommandLine: appCommandLine
       appSettings: mergedAppSettings
