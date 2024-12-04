@@ -69,7 +69,7 @@ resource appServiceAPIApp 'Microsoft.Web/sites@2022-03-01' = {
     httpsOnly: true
     siteConfig: {
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${dockerRegistryImageName}:${dockerRegistryImageTag}'
-      alwaysOn: false
+      alwaysOn: true
       ftpsState: 'FtpsOnly'
       appCommandLine: appCommandLine
       appSettings: mergedAppSettings
