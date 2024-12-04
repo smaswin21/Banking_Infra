@@ -72,6 +72,9 @@
     },
     "keyVaultSecretNameAdminPassword1": {
       "value": "acr-password1"
+    },
+    "logicAppName": {
+      "value": "money404-logicapp-uat"
     }
   }
 }

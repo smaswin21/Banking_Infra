@@ -108,6 +108,13 @@ param staticWebAppName string = 'ie-bank-swa-dev'
 param locationswa string
 
 
+@description('Name of the Logic App')
+param logicAppName string
+
+@description('Slack Webhook URL to send alerts')
+@secure()
+param slackWebhookUrl string
+
 module keyVault 'modules/infrastructure/keyvault.bicep' = {
   name: 'keyVault'
   params: {
@@ -127,6 +134,15 @@ module logAnalytics 'modules/infrastructure/log-analytics.bicep' = {
     name: logAnalyticsWorkspaceName
   }
 }
+
+module logicAppModule 'modules/infrastructure/logic-app.bicep' = {
+  name: 'logicAppDeployment'
+  params: {
+    logicAppName: logicAppName
+    slackWebhookUrl: slackWebhookUrl
+  }
+}
+
 
 module appService 'modules/website.bicep' = {
   name: 'appService'
