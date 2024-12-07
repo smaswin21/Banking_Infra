@@ -1,3 +1,7 @@
-# Codeowners file --> Everyone is allowed edit, however Aswin must approve
+# Codeowners file
 @smaswin21
-@cloud-architect
+
+/.github/workflows @velocitatem @GRINGOLOCO7 @VictorBellens
+/modules @velocitatem @dianarubaga @GRINGOLOCO7 @VictorBellens
+/workbooks @velocitatem @dianarubaga 
+/parameters @velocitatem @dianarubaga @GRINGOLOCO7 @VictorBellens
