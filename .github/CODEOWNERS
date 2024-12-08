@@ -1,0 +1,7 @@
+# Codeowners file
+@smaswin21
+
+/.github/workflows @velocitatem @GRINGOLOCO7 @VictorBellens
+/modules @velocitatem @dianarubaga @GRINGOLOCO7 @VictorBellens
+/workbooks @velocitatem @dianarubaga 
+/parameters @velocitatem @dianarubaga @GRINGOLOCO7 @VictorBellens
