@@ -210,6 +210,7 @@
         "resourceType": "microsoft.insights/components",
         "metricScope": 0,
         "resourceIds": [
+          "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourceGroups/BCSAI2024-DEVOPS-STUDENTS-B-PROD/providers/Microsoft.Insights/components/money404-appInsights-prod",
           "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourcegroups/bcsai2024-devops-students-b-dev/providers/microsoft.insights/components/money404-appinsights-dev"
         ],
         "timeContext": {
@@ -349,6 +350,7 @@
         "resourceType": "microsoft.keyvault/vaults",
         "metricScope": 0,
         "resourceIds": [
+          "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourceGroups/BCSAI2024-DEVOPS-STUDENTS-B-PROD/providers/Microsoft.KeyVault/vaults/money404-kv-prod",
           "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourceGroups/BCSAI2024-DEVOPS-STUDENTS-B-UAT/providers/Microsoft.KeyVault/vaults/money404-kv-uat"
         ],
         "timeContext": {
@@ -384,6 +386,7 @@
         "resourceType": "microsoft.dbforpostgresql/flexibleservers",
         "metricScope": 0,
         "resourceIds": [
+          "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourceGroups/BCSAI2024-DEVOPS-STUDENTS-B-PROD/providers/Microsoft.DBforPostgreSQL/flexibleServers/money404-dbsrv-prod",
           "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourceGroups/BCSAI2024-DEVOPS-STUDENTS-B-UAT/providers/Microsoft.DBforPostgreSQL/flexibleServers/money404-dbsrv-uat"
         ],
         "timeContext": {
@@ -393,8 +396,7 @@
           {
             "namespace": "microsoft.dbforpostgresql/flexibleservers",
             "metric": "microsoft.dbforpostgresql/flexibleservers-Availability-is_db_alive",
-            "aggregation": 3,
-            "splitBy": null
+            "aggregation": 3
           }
         ],
         "gridSettings": {
@@ -405,7 +407,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourceGroups/BCSAI2024-DEVOPS-STUDENTS-B-DEV/providers/Microsoft.Insights/components/money404-appInsights-dev"
+    "/subscriptions/e0b9cada-61bc-4b5a-bd7a-52c606726b3b/resourceGroups/BCSAI2024-DEVOPS-STUDENTS-B-PROD/providers/Microsoft.Insights/components/money404-appInsights-prod"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
